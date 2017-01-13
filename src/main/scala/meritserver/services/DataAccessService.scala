@@ -7,7 +7,7 @@ import DefaultJsonProtocol._
 
 object DataAccessService extends Configuration with Transaction2Json {
   implicit val userFormat = jsonFormat4(User.apply)
-  implicit val transactionFormat = jsonFormat6(Transaction.apply)
+  implicit val transactionFormat = jsonFormat7(Transaction)
 
   def loadUsers(): List[User] = {
     FileAccessService.readFromFile(meritUsersFile).map(_.parseJson) match {

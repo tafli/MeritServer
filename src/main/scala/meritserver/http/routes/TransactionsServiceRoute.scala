@@ -12,7 +12,7 @@ import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 import scala.util.{Failure, Success}
 
 trait TransactionsServiceRoute extends TransactionsService with BaseServiceRoute with SprayJsonSupport with DefaultJsonProtocol with Transaction2Json {
-  implicit val transactionFormat: RootJsonFormat[Transaction] = jsonFormat6(Transaction)
+  implicit val transactionFormat: RootJsonFormat[Transaction] = jsonFormat7(Transaction)
   implicit val createTransactionFormat: RootJsonFormat[CreateTransaction] = jsonFormat4(CreateTransaction)
 
   val transactionsRoute: Route = pathPrefix("transactions") {

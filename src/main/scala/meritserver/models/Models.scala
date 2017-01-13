@@ -6,7 +6,7 @@ import java.util.UUID
 case class User(id: String = UUID.randomUUID().toString, familyName: String, firstName: String, balance: Int = 0)
 case class CreateUser(familyName: String, firstName: String)
 
-case class Transaction(id: String = UUID.randomUUID().toString, from: String, to: String, amount: Int, reason: String, date: LocalDate = LocalDate.now)
+case class Transaction(id: String = UUID.randomUUID().toString, from: String, to: String, amount: Int, reason: String, date: LocalDate = LocalDate.now, booked: Boolean = false)
 case class CreateTransaction(from: String, to: String, amount: Int, reason: String)
 
 trait Transaction2Json {
