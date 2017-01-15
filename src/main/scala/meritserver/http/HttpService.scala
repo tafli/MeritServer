@@ -1,13 +1,9 @@
 package meritserver.http
 
 import akka.http.scaladsl.server.Directives._
-import akka.util.Timeout
-import meritserver.http.routes.{TransactionsServiceRoute, UsersServiceRoute}
+import meritserver.http.routes.{TransactionServiceRoute, UserServiceRoute}
 
-trait HttpService extends UsersServiceRoute with TransactionsServiceRoute {
-
-  import scala.concurrent.duration._
-  override implicit val timeout: Timeout = Timeout(1 seconds)
+trait HttpService extends UserServiceRoute with TransactionServiceRoute {
 
   val routes =
     pathPrefix("v1") {

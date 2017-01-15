@@ -1,10 +1,10 @@
 import akka.event.LoggingAdapter
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import meritserver.http.routes.TransactionsServiceRoute
+import meritserver.http.routes.TransactionServiceRoute
 import org.scalatest.{Matchers, WordSpec}
 import spray.json.JsArray
 
-class TransactionsServiceRouteTest extends WordSpec with TransactionsServiceRoute with Matchers with ScalatestRouteTest {
+class TransactionServiceRouteTest extends WordSpec with TransactionServiceRoute with Matchers with ScalatestRouteTest {
   override protected def log: LoggingAdapter = ???
 
   "The service for the users path" should {
