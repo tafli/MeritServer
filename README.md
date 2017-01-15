@@ -7,7 +7,7 @@ A simple Web-Service to track your Merits!
 
 ## Synopsis
 
-**MeritServer** can be used to track your Merits.
+**MeritServer** is a service to help track your Merits.
 
 ## Motivation
 
