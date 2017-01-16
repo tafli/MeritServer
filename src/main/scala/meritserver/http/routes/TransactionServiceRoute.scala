@@ -23,8 +23,8 @@ trait TransactionServiceRoute extends TransactionService with BaseServiceRoute w
       post {
         entity(as[CreateTransaction]) { transaction =>
           createTransaction(transaction) match {
-            case Success(t:Transaction) => complete(t)
-            case Failure(f) => complete(ClientError(400)("Bad Request", f.getMessage))
+            case Success(t:Transaction) => complete(StatusCodes.Created -> t)
+            case Failure(f) => complete(StatusCodes.BadRequest -> f.getMessage)
           }
         }
       }

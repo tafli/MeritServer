@@ -6,12 +6,12 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import meritserver.models.{CreateUser, User}
 import meritserver.services.UserService
-import spray.json.DefaultJsonProtocol
+import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
 trait UserServiceRoute extends UserService with BaseServiceRoute with SprayJsonSupport with DefaultJsonProtocol {
 
-  implicit val userFormat = jsonFormat4(User)
-  implicit val createUserFormat = jsonFormat2(CreateUser)
+  implicit val userFormat: RootJsonFormat[User] = jsonFormat4(User)
+  implicit val createUserFormat: RootJsonFormat[CreateUser] = jsonFormat2(CreateUser)
 
   val usersRoute: Route = pathPrefix("users") {
     pathEndOrSingleSlash {
@@ -20,12 +20,12 @@ trait UserServiceRoute extends UserService with BaseServiceRoute with SprayJsonS
       } ~
       post {
         entity(as[CreateUser]) { user =>
-          complete(createUser(user))
+          complete(StatusCodes.Created -> createUser(user))
         }
       } ~
         put {
           entity(as[List[CreateUser]]) { users =>
-            complete(createUsers(users))
+            complete(StatusCodes.Created -> createUsers(users))
           }
         } ~
         delete {
