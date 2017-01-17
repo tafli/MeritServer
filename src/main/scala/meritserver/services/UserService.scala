@@ -2,10 +2,11 @@ package meritserver.services
 
 import akka.agent.Agent
 import meritserver.models.{CreateUser, User}
-import meritserver.utils.{Configuration, TryAwait}
+import meritserver.utils.Configuration
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.util.{Failure, Success, Try}
 
 object UserService extends UserService with Configuration {
 
@@ -18,7 +19,7 @@ object UserService extends UserService with Configuration {
   def save(data: String): Unit = FileAccessService.writeToFile(usersFile, data)
 }
 
-trait UserService extends TryAwait {
+trait UserService {
 
   def getUsers: List[User] = UserService.userAgent.get
 
@@ -32,19 +33,27 @@ trait UserService extends TryAwait {
     }
   }
 
-  def createUser(pUser: CreateUser): User = {
-    val newUser = User(familyName = pUser.familyName, firstName = pUser.firstName)
-    UserService.userAgent.alter(_ :+ newUser).onSuccess {
-      case users => DataAccessService.saveUsers(users)
+  def createUser(pUser: CreateUser): Try[User] = {
+    val newUser: User = mapUser(pUser)
+    UserService.userAgent.get.count(_.id == newUser.id) match {
+      case 0 =>
+        UserService.userAgent.alter(_ :+ newUser).onSuccess {
+          case users => DataAccessService.saveUsers(users)
+        }
+        Success(newUser)
+      case _ => println("Got that User already")
+        Failure(new IllegalArgumentException("User with this ID already exists!"))
     }
-    newUser
   }
 
   def createUsers(pUsers: List[CreateUser]): Future[List[User]] = {
-    val usersFuture = UserService.userAgent.alter(pUsers.map(user => User(familyName = user.familyName, firstName = user.firstName)))
+    val usersFuture = UserService.userAgent.alter(pUsers.map(user => mapUser(user)))
     usersFuture.onSuccess {
       case users => DataAccessService.saveUsers(users)
     }
     usersFuture
   }
+
+  private def mapUser(pUser: CreateUser): User = pUser.id.map(pId => User(id=pId, familyName = pUser.familyName, firstName = pUser.firstName))
+    .getOrElse(User(familyName = pUser.familyName, firstName = pUser.firstName))
 }

@@ -2,7 +2,7 @@ package meritserver.services
 
 import akka.agent.Agent
 import meritserver.models.{CreateTransaction, Transaction}
-import meritserver.utils.{Configuration, TryAwait}
+import meritserver.utils.Configuration
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
@@ -17,7 +17,7 @@ object TransactionService extends TransactionService with Configuration {
   def save(data: String): Unit = FileAccessService.writeToFile(transactionsFile, data)
 }
 
-trait TransactionService extends TryAwait {
+trait TransactionService {
   def getTransactions: List[Transaction] = TransactionService.transactionAgent.get
 
   def getTransactionById(id: String): Option[Transaction] = TransactionService.transactionAgent.get.find(_.id == id)
@@ -41,20 +41,20 @@ trait TransactionService extends TryAwait {
   }
 
   private def isTransactionValid(transaction: CreateTransaction): Try[String] = {
-    if(transaction.from == transaction.to) return Failure(new IllegalArgumentException("Sender and Receiver cannot be the same!"))
-    if(transaction.amount > TransactionService.meritStartAmount) return Failure(new IllegalArgumentException("Amount cannot be higher than initial amount!"))
-    if(transaction.amount <= 0) return Failure(new IllegalArgumentException("Amount must be positive!"))
+    if (transaction.from == transaction.to) return Failure(new IllegalArgumentException("Sender and Receiver cannot be the same!"))
+    if (transaction.amount > TransactionService.meritStartAmount) return Failure(new IllegalArgumentException("Amount cannot be higher than initial amount!"))
+    if (transaction.amount <= 0) return Failure(new IllegalArgumentException("Really? Nothing?"))
 
     val from = UserService.getUserById(transaction.from)
     val to = UserService.getUserById(transaction.to)
 
-    if(from.isEmpty) return Failure(new IllegalArgumentException("Sender not found!"))
-    if(to.isEmpty) return Failure(new IllegalArgumentException("Receiver not found!"))
+    if (from.isEmpty) return Failure(new IllegalArgumentException("Sender not found!"))
+    if (to.isEmpty) return Failure(new IllegalArgumentException("Receiver not found!"))
 
-    val sentAmount = TransactionService.transactionAgent.get.filter(_.from == transaction.from).foldLeft(0){(acc, t) => acc + t.amount}
+    val sentAmount = TransactionService.transactionAgent.get.filter(_.from == transaction.from).filterNot(_.booked == true).foldLeft(0) { (acc, t) => acc + t.amount }
 
-    if(sentAmount + transaction.amount > TransactionService.meritStartAmount)
-      return Failure(new IllegalArgumentException(s"Balance of [${TransactionService.meritStartAmount-sentAmount}] too low!"))
+    if (sentAmount + transaction.amount > TransactionService.meritStartAmount)
+      return Failure(new IllegalArgumentException(s"Available amount [${TransactionService.meritStartAmount - sentAmount}] too low!"))
 
     Success("Everything is fine!")
   }

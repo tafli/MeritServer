@@ -18,6 +18,13 @@ I decided to start my own to do this job. Beside that I could learn [Akka-HTTP](
 
 Download sources an use `sbt run` to compile an run the project. By default the webserver starts listening on port 9000.
 
+## Configuration
+
+- `merit.startAmount`: The amount of merits each user can give each round.
+- `merit.payoutThreshold`: The threshold on which random number from 0.0 to it a payout happens.
+- `merit.userFile`: File path where the user data is save.
+- `merit.transactionFile`: File path where the transaction data is saved.
+
 ## API Reference
 
 ### GET `http://<server>:9000/v1/users`
@@ -201,6 +208,63 @@ Deletes a transaction specified by {id}.
 curl --request DELETE \
   --url http://localhost:9000/v1/transactions/3eb595f4-40a1-42bd-bceb-9a39164e0161
 ```
+
+### GET `http://<server>:9000/v1/merits`
+
+Returns for all users a list of all received merits since last payout.
+
+```bash
+curl --request GET \
+  --url http://localhost:9000/v1/merits
+```
+
+```json
+[
+	{
+		"userId": "8a7dedd2-a946-4dff-b8c7-fb392a7627ee",
+		"name": "Donald Duck",
+		"amount": 0
+	},
+	{
+		"userId": "51492b93-af20-4130-a37b-7b4c97fb9894",
+		"name": "Daisy Duck",
+		"amount": 42
+	}
+]
+```
+
+### GET `http://<server>:9000/v1/merits`
+
+Based on a random number a payout is decided. The payout-list for all user is returned.
+
+```bash
+curl --request GET \
+  --url http://localhost:9000/v1/merits/payout
+```
+Payday:
+```json
+[
+	{
+		"userId": "8a7dedd2-a946-4dff-b8c7-fb392a7627ee",
+		"name": "Donald Duck",
+		"amount": 0
+	},
+	{
+		"userId": "51492b93-af20-4130-a37b-7b4c97fb9894",
+		"name": "Daisy Duck",
+		"amount": 42
+	}
+]
+```
+
+Nothing yet:
+```json
+[]
+```
+
+In any case all transactions are booked.<br/>
+If no payout happened a users balance is increased according its merits to be paid out later.<br/>
+In case of a payout, a users balance is set to 0.
 
 ## Tests
 

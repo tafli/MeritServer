@@ -12,4 +12,6 @@ trait Configuration {
   val meritStartAmount = config.getInt("merit.startAmount")
   val meritUsersFile = config.getString("merit.usersFile")
   val meritTransactionsFile = config.getString("merit.transactionsFile")
+
+  val payoutThreshold = config.getDouble("merit.payoutThreshold")
 }
