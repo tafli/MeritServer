@@ -233,12 +233,12 @@ curl --request GET \
 ]
 ```
 
-### GET `http://<server>:9000/v1/merits/payday`
+### POST `http://<server>:9000/v1/merits/payday`
 
 Based on a random number a payout is decided. The payout-list for all user is returned.
 
 ```bash
-curl --request GET \
+curl --request POST \
   --url http://localhost:9000/v1/merits/payday
 ```
 Payday:
