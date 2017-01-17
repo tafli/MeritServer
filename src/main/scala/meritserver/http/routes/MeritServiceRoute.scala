@@ -14,7 +14,7 @@ trait MeritServiceRoute extends MeritService with BaseServiceRoute with SprayJso
         complete(getMerits)
       }
     } ~
-      path("payout") {
+      path("payday") {
         post {
           complete(payout())
         }

@@ -20,6 +20,8 @@ libraryDependencies ++= {
   )
 }
 
+enablePlugins(JavaAppPackaging)
 enablePlugins(DockerPlugin)
 
+dockerUpdateLatest := true
 parallelExecution in Test := false
