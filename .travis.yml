@@ -5,3 +5,5 @@ scala:
    - 2.12.1
 script:
   - sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport
+after_success:
+  - sbt coveralls
