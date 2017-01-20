@@ -2,6 +2,7 @@ Merit Server
 ============
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/tafli/MeritServer.svg?branch=master)](https://travis-ci.org/tafli/MeritServer)
+[![Coverage Status](https://coveralls.io/repos/github/tafli/MeritServer/badge.svg?branch=master)](https://coveralls.io/github/tafli/MeritServer?branch=master)
 
 A simple Web-Service to track your Merits!
 
