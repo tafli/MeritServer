@@ -1,9 +1,11 @@
 package meritserver.models
 
-import java.time.LocalDateTime
+import java.time.{LocalDate, LocalDateTime}
 import java.util.UUID
 
 import spray.json.DefaultJsonProtocol
+
+import scala.util.Try
 
 case class User(id: String = UUID.randomUUID().toString, familyName: String, firstName: String, balance: Int = 0)
 case class CreateUser(id: Option[String], familyName: String, firstName: String)
@@ -18,7 +20,7 @@ trait Model2Json extends DefaultJsonProtocol {
 
   implicit object localDateFormat extends RootJsonFormat[LocalDateTime] {
     override def read(json: JsValue): LocalDateTime = json match {
-      case JsString(s) => LocalDateTime.parse(s.toString)
+      case JsString(s) => Try{LocalDateTime.parse(s.toString)}.getOrElse(LocalDate.parse(s.toString).atStartOfDay())
       case _ => throw DeserializationException(s"Not a proper LocalDate: [$json]")
     }
 
