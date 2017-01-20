@@ -31,6 +31,11 @@ trait UserService {
     usersFuture.onSuccess {
       case users => DataAccessService.saveUsers(users)
     }
+
+    val transactionsFuture = TransactionService.transactionAgent.alter(List())
+    transactionsFuture.onSuccess {
+      case transactions => DataAccessService.saveTransactions(transactions)
+    }
   }
 
   def createUser(pUser: CreateUser): Try[User] = {
