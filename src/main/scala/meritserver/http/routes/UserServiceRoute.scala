@@ -16,12 +16,12 @@ trait UserServiceRoute extends UserService with BaseServiceRoute with SprayJsonS
       } ~
       post {
         entity(as[CreateUser]) { user =>
-          complete(StatusCodes.Created -> createUser(user))
+          complete(StatusCodes.Created, createUser(user))
         }
       } ~
         put {
           entity(as[List[CreateUser]]) { users =>
-            complete(StatusCodes.Created -> createUsers(users))
+            complete(StatusCodes.Created, createUsers(users))
           }
         } ~
         delete {
