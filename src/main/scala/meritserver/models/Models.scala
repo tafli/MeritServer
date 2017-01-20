@@ -8,10 +8,18 @@ import spray.json.DefaultJsonProtocol
 import scala.util.Try
 
 case class User(id: String = UUID.randomUUID().toString, familyName: String, firstName: String, balance: Int = 0)
-case class CreateUser(id: Option[String], familyName: String, firstName: String)
+case class CreateUser(id: Option[String], familyName: String, firstName: String) {
+  require(!familyName.isEmpty, "familyName must not be empty")
+  require(!firstName.isEmpty, "firstName must not be empty")
+}
 
 case class Transaction(id: String = UUID.randomUUID().toString, from: String, to: String, amount: Int, reason: String, date: LocalDateTime = LocalDateTime.now, booked: Boolean = false)
-case class CreateTransaction(from: String, to: String, amount: Int, reason: String)
+case class CreateTransaction(from: String, to: String, amount: Int, reason: String) {
+  require(!from.isEmpty, "From must not be empty!")
+  require(!to.isEmpty, "To must not be empty!")
+  require(amount > 0, "Amount must be positive!")
+  require(!reason.isEmpty, "A reason would be nice!")
+}
 
 case class Merit(userId: String, name: String, amount: Int)
 
