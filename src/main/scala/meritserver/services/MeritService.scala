@@ -22,16 +22,16 @@ trait MeritService extends Configuration {
       case i if i <= payoutThreshold =>
         val listOfMerits = MeritService.getListOfMerits
         bookTransaction()
-        UserService.userAgent.alter(_.map(_.copy(balance = 0))).onSuccess {
-          case users => DataAccessService.saveUsers(users)
+        UserService.userAgent.alter(_.map(_.copy(balance = 0))).foreach { users =>
+          DataAccessService.saveUsers(users)
         }
         listOfMerits
 
       case _ =>
         UserService.userAgent.alter(_.map(user => user.copy(
           balance = TransactionService.transactionAgent.get.filter(_.to == user.id).filter(_.booked == false).foldLeft(0) { (acc, t) => acc + t.amount }
-        ))).onSuccess {
-          case users => DataAccessService.saveUsers(users)
+        ))).foreach { users =>
+          DataAccessService.saveUsers(users)
         }
         bookTransaction()
         List()
@@ -39,8 +39,8 @@ trait MeritService extends Configuration {
   }
 
   def bookTransaction(): Unit = {
-    TransactionService.transactionAgent.alter(_.map(_.copy(booked = true))).onSuccess {
-      case transactions => DataAccessService.saveTransactions(transactions)
+    TransactionService.transactionAgent.alter(_.map(_.copy(booked = true))).foreach { transactions =>
+      DataAccessService.saveTransactions(transactions)
     }
   }
 }

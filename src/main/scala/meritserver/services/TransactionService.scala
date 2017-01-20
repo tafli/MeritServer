@@ -26,8 +26,8 @@ trait TransactionService {
     isTransactionValid(pTransaction) match {
       case Success(_) =>
         val newTransaction = Transaction(from = pTransaction.from, to = pTransaction.to, amount = pTransaction.amount, reason = pTransaction.reason)
-        TransactionService.transactionAgent.alter(_ :+ newTransaction).onSuccess {
-          case transactions => DataAccessService.saveTransactions(transactions)
+        TransactionService.transactionAgent.alter(_ :+ newTransaction).foreach { transactions =>
+          DataAccessService.saveTransactions(transactions)
         }
         Success(newTransaction)
       case Failure(e) => Failure(e)
@@ -35,8 +35,8 @@ trait TransactionService {
   }
 
   def deleteTransaction(id: String): Unit = {
-    TransactionService.transactionAgent.alter(_.filterNot(_.id == id)).onSuccess {
-      case transactions => DataAccessService.saveTransactions(transactions)
+    TransactionService.transactionAgent.alter(_.filterNot(_.id == id)).foreach { transactions =>
+      DataAccessService.saveTransactions(transactions)
     }
   }
 

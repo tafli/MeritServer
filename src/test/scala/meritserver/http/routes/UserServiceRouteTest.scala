@@ -6,42 +6,46 @@ import akka.event.{LoggingAdapter, NoLogging}
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.{HttpEntity, MediaTypes}
 import akka.http.scaladsl.testkit.ScalatestRouteTest
+import meritserver.http.HttpService
 import meritserver.models.{CreateUser, User}
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.{Matchers, WordSpec}
 import spray.json.JsArray
 
-class UserServiceRouteTest extends WordSpec with Matchers with ScalatestRouteTest with UserServiceRoute {
+class UserServiceRouteTest extends WordSpec with Matchers with ScalatestRouteTest with HttpService {
   override protected def log: LoggingAdapter = NoLogging
+  val apiVersion = "v1"
 
   "The service for the users path" should {
     "return an empty user list" in {
-      Get("/users") ~> usersRoute ~> check {
+      Get(s"/$apiVersion/users") ~> routes ~> check {
         status shouldBe OK
         responseAs[JsArray] shouldEqual JsArray()
       }
     }
     "return a list of all users" in {
       val createUser = CreateUser(id = None, familyName = "Boss", firstName = "Andreas")
-      Post("/users", createUser) ~> usersRoute
-      Post("/users", createUser.copy(firstName = "Barbara")) ~> usersRoute
+      Post(s"/$apiVersion/users", createUser) ~> routes
+      Post(s"/$apiVersion/users", createUser.copy(firstName = "Barbara")) ~> routes
+      Post(s"/$apiVersion/users", createUser.copy(firstName = "Fynn")) ~> routes
+      Post(s"/$apiVersion/users", createUser.copy(firstName = "Lya")) ~> routes
 
-      Get("/users") ~> usersRoute ~> check {
+      Get(s"/$apiVersion/users") ~> routes ~> check {
         val response = responseAs[JsArray]
-        response.elements.size shouldEqual 2
+        response.elements.size shouldEqual 4
       }
     }
     "return newly created user" when {
       "created without ID" in {
         val createUser = CreateUser(id = None, familyName = "Boss", firstName = "Andreas")
-        Post("/users", createUser) ~> usersRoute ~> check {
+        Post(s"/$apiVersion/users", createUser) ~> routes ~> check {
           status shouldBe Created
           assertUser(responseAs[User], createUser)
         }
       }
       "created with ID" in {
         val createUser = CreateUser(id = Option("theBoss"), familyName = "Boss", firstName = "Andreas")
-        Post("/users", createUser) ~> usersRoute ~> check {
+        Post(s"/$apiVersion/users", createUser) ~> routes ~> check {
           status shouldBe Created
           assertUser(responseAs[User], createUser)
         }
@@ -49,17 +53,17 @@ class UserServiceRouteTest extends WordSpec with Matchers with ScalatestRouteTes
     }
     "return user" in {
       val createUser = CreateUser(id = Some("abos"), familyName = "Boss", firstName = "Andreas")
-      Post("/users", createUser) ~> usersRoute ~> check {
+      Post(s"/$apiVersion/users", createUser) ~> routes ~> check {
 
       }
-      Get("/users/abos") ~> usersRoute ~> check {
+      Get(s"/$apiVersion/users/abos") ~> routes ~> check {
         status shouldBe OK
         assertUser(responseAs[User], createUser)
       }
     }
     "return with status 404" when {
       "request user with unknown ID" in {
-        Get("/users/NoUserId") ~> usersRoute ~> check {
+        Get(s"/$apiVersion/users/NoUserId") ~> routes ~> check {
           status shouldBe NotFound
         }
       }
@@ -67,14 +71,14 @@ class UserServiceRouteTest extends WordSpec with Matchers with ScalatestRouteTes
     "return with status 400" when {
       "create User with no familyName" in {
         intercept[TestFailedException] {
-          Post("/users", HttpEntity(MediaTypes.`application/json`, """{"firstName":"Andreas"}""")) ~> usersRoute ~> check {
+          Post(s"/$apiVersion/users", HttpEntity(MediaTypes.`application/json`, """{"firstName":"Andreas"}""")) ~> routes ~> check {
             status shouldBe OK
           }
         }
       }
       "create User with no firstName" in {
         intercept[TestFailedException] {
-          Post("/users", HttpEntity(MediaTypes.`application/json`, """{"familyName":"Boss"}""")) ~> usersRoute ~> check {
+          Post(s"/$apiVersion/users", HttpEntity(MediaTypes.`application/json`, """{"familyName":"Boss"}""")) ~> routes ~> check {
             status shouldBe OK
           }
         }

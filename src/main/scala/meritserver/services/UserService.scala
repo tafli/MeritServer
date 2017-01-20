@@ -28,13 +28,13 @@ trait UserService {
   def deleteUsers(): Unit = {
     val usersFuture = UserService.userAgent.alter(List())
 
-    usersFuture.onSuccess {
-      case users => DataAccessService.saveUsers(users)
+    usersFuture.foreach { users =>
+      DataAccessService.saveUsers(users)
     }
 
     val transactionsFuture = TransactionService.transactionAgent.alter(List())
-    transactionsFuture.onSuccess {
-      case transactions => DataAccessService.saveTransactions(transactions)
+    transactionsFuture.foreach { transactions =>
+      DataAccessService.saveTransactions(transactions)
     }
   }
 
@@ -42,8 +42,8 @@ trait UserService {
     val newUser: User = mapUser(pUser)
     UserService.userAgent.get.count(_.id == newUser.id) match {
       case 0 =>
-        UserService.userAgent.alter(_ :+ newUser).onSuccess {
-          case users => DataAccessService.saveUsers(users)
+        UserService.userAgent.alter(_ :+ newUser).foreach { users =>
+          DataAccessService.saveUsers(users)
         }
         Success(newUser)
       case _ => println("Got that User already")
@@ -53,8 +53,8 @@ trait UserService {
 
   def createUsers(pUsers: List[CreateUser]): Future[List[User]] = {
     val usersFuture = UserService.userAgent.alter(pUsers.map(user => mapUser(user)))
-    usersFuture.onSuccess {
-      case users => DataAccessService.saveUsers(users)
+    usersFuture.foreach { users =>
+      DataAccessService.saveUsers(users)
     }
     usersFuture
   }
