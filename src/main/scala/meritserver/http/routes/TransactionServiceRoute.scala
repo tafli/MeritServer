@@ -23,10 +23,10 @@ trait TransactionServiceRoute
         post {
           entity(as[CreateTransaction]) { transaction =>
             createTransaction(transaction) match {
-              case Success(t: Transaction) =>
-                complete(StatusCodes.Created -> t)
+              case Success(pTransaction: Transaction) =>
+                complete(StatusCodes.Created, pTransaction)
               case Failure(f) =>
-                complete(StatusCodes.BadRequest -> f.getMessage)
+                complete(StatusCodes.BadRequest, f.getMessage)
             }
           }
         }
@@ -34,7 +34,7 @@ trait TransactionServiceRoute
       path(Segment) { id: String =>
         get {
           getTransactionById(id) match {
-            case Some(transaction) => complete(transaction)
+            case Some(pTransaction) => complete(pTransaction)
             case _                 => complete(StatusCodes.InternalServerError)
           }
         } ~

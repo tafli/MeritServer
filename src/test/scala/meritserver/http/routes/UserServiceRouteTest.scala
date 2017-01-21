@@ -1,56 +1,14 @@
 package meritserver.http.routes
 
-import akka.event.{LoggingAdapter, NoLogging}
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, MediaTypes}
-import akka.http.scaladsl.testkit.ScalatestRouteTest
-import meritserver.http.HttpService
-import meritserver.models.{Transaction, User}
+import meritserver.models.User
 import meritserver.services.{TransactionService, UserService}
+import org.scalatest.Assertion
 import org.scalatest.exceptions.TestFailedException
-import org.scalatest.{Assertion, Matchers, WordSpec}
 import spray.json.JsArray
 
-import scala.concurrent.Await
-
-class UserServiceRouteTest
-    extends WordSpec
-    with Matchers
-    with ScalatestRouteTest
-    with HttpService
-    with UserService
-    with TransactionService {
-  override protected def log: LoggingAdapter = NoLogging
-
-  val apiVersion = "v1"
-
-  private def withUsers(count: Int)(test: List[User] => Any) = {
-    import scala.concurrent.duration._
-
-    val list = (for {
-      i <- 1 to count
-      user = User(id = i.toString,
-                  familyName = s"FamilyName$i",
-                  firstName = s"FirstName$i")
-    } yield user).toList
-
-    test(Await.result(UserService.userAgent.alter(list), 1 second))
-  }
-  private def withTransactions(users: List[User])(
-      test: List[Transaction] => Any) = {
-    import scala.concurrent.duration._
-
-    val list = (for {
-      i <- 0 until users.length-1
-      transaction = Transaction(from = users(i).id,
-                                to = users(i + 1).id,
-                                amount = i,
-                                reason = "Hey, just testing!")
-    } yield transaction).toList
-
-    test(
-      Await.result(TransactionService.transactionAgent.alter(list), 1 second))
-  }
+class UserServiceRouteTest extends ServiceTest {
 
   "The service for the users path" when {
     "calling GET /v1/users" should {
@@ -218,9 +176,9 @@ class UserServiceRouteTest
     }
   }
 
-  private def assertUser(response: User, testee: User): Assertion = {
+  private def assertUser(response: User, against: User): Assertion = {
     assert(
-      response.id.length > 0 && response.familyName == testee.familyName && response.firstName == testee.firstName && response.balance == 0
+      response.id.length > 0 && response.familyName == against.familyName && response.firstName == against.firstName && response.balance == 0
     )
   }
 }
