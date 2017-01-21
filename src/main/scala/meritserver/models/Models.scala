@@ -39,7 +39,7 @@ case class CreateTransaction(from: String,
   require(!reason.isEmpty, "A reason would be nice!")
 }
 
-case class Merit(userId: String, name: String, amount: Int)
+case class Merit(userId: String, name: String, received: Int, sent: Int, available: Int)
 
 trait Model2Json extends DefaultJsonProtocol {
   import spray.json.{DeserializationException, JsString, JsValue, RootJsonFormat}
@@ -63,5 +63,5 @@ trait Model2Json extends DefaultJsonProtocol {
     Transaction)
   implicit val createTransactionFormat: RootJsonFormat[CreateTransaction] =
     jsonFormat4(CreateTransaction)
-  implicit val meritFormat: RootJsonFormat[Merit] = jsonFormat3(Merit)
+  implicit val meritFormat: RootJsonFormat[Merit] = jsonFormat5(Merit)
 }

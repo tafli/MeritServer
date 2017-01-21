@@ -5,15 +5,26 @@ import meritserver.utils.Configuration
 
 object MeritService {
   def getListOfMerits: List[Merit] =
-    UserService.userAgent.get.map(
-      user =>
+    UserService.userAgent.get.map(user =>
         Merit(
           userId = user.id,
           name = s"${user.firstName} ${user.familyName}",
-          amount = user.balance + TransactionService.transactionAgent.get
+          received = user.balance + TransactionService.transactionAgent.get
               .filter(_.to == user.id)
-              .filter(_.booked == false)
+              .filter(!_.booked)
               .foldLeft(0) { (acc, t) =>
+              acc + t.amount
+            },
+          sent = TransactionService.transactionAgent.get
+            .filter(_.from == user.id)
+            .filter(!_.booked)
+            .foldLeft(0) { (acc, t) =>
+              acc + t.amount
+            },
+          available = TransactionService.meritStartAmount - TransactionService.transactionAgent.get
+            .filter(_.from == user.id)
+            .filter(!_.booked)
+            .foldLeft(0) { (acc, t) =>
               acc + t.amount
             }
       ))
@@ -44,7 +55,7 @@ trait MeritService extends Configuration {
                 user.copy(
                   balance = TransactionService.transactionAgent.get
                     .filter(_.to == user.id)
-                    .filter(_.booked == false)
+                    .filter(!_.booked)
                     .foldLeft(0) { (acc, t) =>
                       acc + t.amount
                     }
