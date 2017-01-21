@@ -6,7 +6,11 @@ import akka.http.scaladsl.server.Route
 import meritserver.models.Model2Json
 import meritserver.services.MeritService
 
-trait MeritServiceRoute extends MeritService with BaseServiceRoute with SprayJsonSupport with Model2Json {
+trait MeritServiceRoute
+    extends MeritService
+    with BaseServiceRoute
+    with SprayJsonSupport
+    with Model2Json {
 
   val meritsRoute: Route = pathPrefix("merits") {
     pathEndOrSingleSlash {

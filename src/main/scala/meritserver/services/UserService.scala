@@ -23,7 +23,8 @@ trait UserService {
 
   def getUsers: List[User] = UserService.userAgent.get
 
-  def getUserById(id: String): Option[User] = UserService.userAgent.get.find(_.id == id)
+  def getUserById(id: String): Option[User] =
+    UserService.userAgent.get.find(_.id == id)
 
   def deleteUsers(): Unit = {
     val usersFuture = UserService.userAgent.alter(List())
@@ -46,19 +47,29 @@ trait UserService {
           DataAccessService.saveUsers(users)
         }
         Success(newUser)
-      case _ => println("Got that User already")
-        Failure(new IllegalArgumentException("User with this ID already exists!"))
+      case _ =>
+        println("Got that User already")
+        Failure(
+          new IllegalArgumentException("User with this ID already exists!"))
     }
   }
 
   def createUsers(pUsers: List[CreateUser]): Future[List[User]] = {
-    val usersFuture = UserService.userAgent.alter(pUsers.map(user => mapUser(user)))
+    val usersFuture =
+      UserService.userAgent.alter(pUsers.map(user => mapUser(user)))
     usersFuture.foreach { users =>
       DataAccessService.saveUsers(users)
     }
     usersFuture
   }
 
-  private def mapUser(pUser: CreateUser): User = pUser.id.map(pId => User(id=pId, familyName = pUser.familyName, firstName = pUser.firstName))
-    .getOrElse(User(familyName = pUser.familyName, firstName = pUser.firstName))
+  private def mapUser(pUser: CreateUser): User =
+    pUser.id
+      .map(
+        pId =>
+          User(id = pId,
+               familyName = pUser.familyName,
+               firstName = pUser.firstName))
+      .getOrElse(
+        User(familyName = pUser.familyName, firstName = pUser.firstName))
 }

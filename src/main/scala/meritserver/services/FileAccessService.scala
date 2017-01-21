@@ -15,7 +15,8 @@ object FileAccessService {
   }
 
   def writeToFile(file: String, content: String): Unit = {
-    val bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)))
+    val bufferedWriter = new BufferedWriter(
+      new OutputStreamWriter(new FileOutputStream(file)))
     bufferedWriter.write(content)
     bufferedWriter.close()
   }
@@ -32,7 +33,8 @@ object FileAccessService {
     }
   }
 
-  def readFilesFromDirectory(path: String): List[Path] = readFilesFromDirectory(Paths.get(path))
+  def readFilesFromDirectory(path: String): List[Path] =
+    readFilesFromDirectory(Paths.get(path))
 
   private def readFilesFromDirectory(path: Path): List[Path] = {
     if (Files.isDirectory(path)) {

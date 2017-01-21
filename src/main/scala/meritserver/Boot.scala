@@ -13,12 +13,15 @@ import scala.concurrent.ExecutionContext
 object Boot extends App with Configuration with HttpService {
   private implicit val system = ActorSystem()
 
-  override protected implicit val executor: ExecutionContext = system.dispatcher
+  override protected implicit val executor: ExecutionContext =
+    system.dispatcher
   override protected val log: LoggingAdapter = Logging(system, getClass)
-  override protected implicit val materializer: ActorMaterializer = ActorMaterializer()
+  override protected implicit val materializer: ActorMaterializer =
+    ActorMaterializer()
 
   UserService.userAgent.send(DataAccessService.loadUsers())
-  TransactionService.transactionAgent.send(DataAccessService.loadTransactions())
+  TransactionService.transactionAgent.send(
+    DataAccessService.loadTransactions())
 
   Http().bindAndHandle(routes, httpInterface, httpPort)
 }
