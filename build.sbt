@@ -2,7 +2,7 @@ name := """MeritServer"""
 organization := "tafli"
 scalaVersion := "2.12.1"
 
-version := "0.1.0"
+version := "0.1.1"
 
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 
@@ -17,6 +17,7 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-http"            % akkaHttpVersion,
     "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
     "com.typesafe.akka" %% "akka-http-testkit"    % akkaHttpVersion,
+    "ch.megard"         %% "akka-http-cors"       % "0.1.10",
     "org.scalatest"     %% "scalatest"            % scalaTestVersion % "test"
   )
 }
