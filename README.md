@@ -267,6 +267,10 @@ In any case all transactions are booked.<br/>
 If no payout happened a users balance is increased according its merits to be paid out later.<br/>
 In case of a payout, a users balance is set to 0.
 
+## Static Files
+Every resource in folder `static` can be access via static route `http://<server-address>/static/<your-resource>`.
+This is helpful as you can add a UI to edit or [visualize](https://github.com/MartinGantenbein/MeritJS) the data.
+
 ## Tests
 
 To run the test simple use `sbt test`. And yes the coverage is not (yet) that high.
