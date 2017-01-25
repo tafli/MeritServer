@@ -11,7 +11,7 @@ class TeamServiceRouteTest extends ServiceTest {
 
   "The service for the teams path" when {
     "calling GET /v1/teams" should {
-      "return an empty team list" in {
+      "return an empty team list" in withTeam() { teams =>
         Get(s"/$apiVersion/teams") ~> routes ~> check {
           responseAs[JsArray] shouldEqual JsArray()
         }
