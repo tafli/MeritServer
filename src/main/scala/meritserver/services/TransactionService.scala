@@ -1,7 +1,10 @@
 package meritserver.services
 
+import java.time.LocalDateTime
+
 import akka.agent.Agent
 import meritserver.models.{CreateTransaction, Transaction}
+import meritserver.services.TransactionService.Filter
 import meritserver.utils.Configuration
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -16,11 +19,34 @@ object TransactionService extends TransactionService with Configuration {
 
   def save(data: String): Unit =
     FileAccessService.writeToFile(transactionsFile, data)
+
+  case class Filter(booked: Option[String], from: Option[String], to: Option[String], fromTS: Option[String], toTS: Option[String])
 }
 
 trait TransactionService {
-  def getTransactions: List[Transaction] =
+  def getTransactions(filter: Filter): List[Transaction] = {
     TransactionService.transactionAgent.get
+      .filter( transaction => filter.booked match {
+        case Some(booked) => transaction.booked == booked.toBoolean
+        case _ => true
+      })
+      .filter( transaction => filter.from match {
+        case Some(from) => transaction.from == from
+        case _ => true
+      })
+      .filter( transaction => filter.to match {
+        case Some(to) => transaction.to == to
+        case _ => true
+      })
+      .filter( transaction => filter.fromTS match {
+        case Some(fromTS) => transaction.date.compareTo(LocalDateTime.parse(fromTS)) >= 0
+        case _ => true
+      })
+      .filter( transaction => filter.toTS match {
+        case Some(toTS) => transaction.date.compareTo(LocalDateTime.parse(toTS)) <= 0
+        case _ => true
+      })
+  }
 
   def getTransactionById(id: String): Option[Transaction] =
     TransactionService.transactionAgent.get.find(_.id == id)

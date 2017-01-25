@@ -18,7 +18,9 @@ trait TransactionServiceRoute
   val transactionsRoute: Route = pathPrefix("transactions") {
     pathEndOrSingleSlash {
       get {
-        complete(getTransactions)
+        parameters('booked.?, 'from.?, 'to.?, 'fromTS.?, 'toTS.?).as(TransactionService.Filter) { filter =>
+            complete(getTransactions(filter))
+        }
       } ~
         post {
           entity(as[CreateTransaction]) { transaction =>
@@ -35,7 +37,7 @@ trait TransactionServiceRoute
         get {
           getTransactionById(id) match {
             case Some(pTransaction) => complete(pTransaction)
-            case _                 => complete(StatusCodes.InternalServerError)
+            case _                  => complete(StatusCodes.InternalServerError)
           }
         } ~
           delete {
