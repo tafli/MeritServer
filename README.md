@@ -28,6 +28,46 @@ Download sources an use `sbt run` to compile an run the project. By default the 
 
 ## API Reference
 
+### GET `http://<server>:9000/v1/teams`
+
+Returns all teams.
+
+```bash
+curl --request GET \
+  --url http://localhost:9000/v1/teams
+```
+
+```json
+[
+    {
+        "id": "8a7dedd2-a946-4dff-b8c7-fb392a7627ee",
+        "name": "FC Duckburgh"
+    }
+]
+```
+
+### POST `http://<server>:9000/v1/teams`
+
+Creates a team.
+
+```bash
+curl --request POST \
+  --url http://localhost:9000/v1/teams \
+  --header 'content-type: application/json' \
+  --data '{
+    "teamId": "8a7dedd2-a946-4dff-b8c7-fb392a7627ee",
+	"name": "FC Duckburgh"
+}'
+```
+
+```json
+[
+    {
+      "name": "FC Duckingburgh"
+    }
+]
+```
+
 ### GET `http://<server>:9000/v1/users`
 
 Returns all users.
@@ -41,12 +81,14 @@ curl --request GET \
 [
 	{
 		"id": "8a7dedd2-a946-4dff-b8c7-fb392a7627ee",
+		"teamId": "177c49cc-aaf7-4873-8ddf-4931fe978c4b",
 		"familyName": "Duck",
 		"firstName": "Donald",
 		"balance": 0
 	},
 	{
 		"id": "51492b93-af20-4130-a37b-7b4c97fb9894",
+		"teamId": "e46806ce-2b54-4416-a65f-8a16186b82a4",
 		"familyName": "Duck",
 		"firstName": "Daisy",
 		"balance": 0
@@ -63,9 +105,11 @@ curl --request PUT \
      --url http://localhost:9000/v1/users \
      --header 'content-type: application/json' \
      --data '[{
+     "teamId": "e46806ce-2b54-4416-a65f-8a16186b82a4",
      "familyName": "Duck",
      "firstName": "Donald"
    }, {
+     "teamId": "e46806ce-2b54-4416-a65f-8a16186b82a4",
      "familyName": "Duck",
      "firstName": "Daisy"
    }]'
@@ -75,12 +119,14 @@ curl --request PUT \
 [
 	{
 		"id": "8a7dedd2-a946-4dff-b8c7-fb392a7627ee",
+		"teamId": "e46806ce-2b54-4416-a65f-8a16186b82a4",
 		"familyName": "Duck",
 		"firstName": "Donald",
 		"balance": 0
 	},
 	{
 		"id": "51492b93-af20-4130-a37b-7b4c97fb9894",
+		"teamId": "e46806ce-2b54-4416-a65f-8a16186b82a4",
 		"familyName": "Duck",
 		"firstName": "Daisy",
 		"balance": 0
@@ -97,6 +143,7 @@ curl --request POST \
   --url http://localhost:9000/v1/users \
   --header 'content-type: application/json' \
   --data '{
+    "teamId": "e46806ce-2b54-4416-a65f-8a16186b82a4",
 	"firstName": "Gustav",
 	"familyName": "Duck"
 }'
@@ -105,6 +152,7 @@ curl --request POST \
 ```json
 {
 	"id": "3b25c2e4-00cc-4524-aa71-f400c306c0b0",
+	"teamId": "e46806ce-2b54-4416-a65f-8a16186b82a4",
 	"familyName": "Duck",
 	"firstName": "Gustav",
 	"balance": 0
@@ -123,6 +171,7 @@ curl --request GET \
 ```json
 {
 	"id": "51492b93-af20-4130-a37b-7b4c97fb9894",
+	"teamId": "e46806ce-2b54-4416-a65f-8a16186b82a4",
 	"familyName": "Duck",
 	"firstName": "Daisy",
 	"balance": 0

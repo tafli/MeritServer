@@ -3,15 +3,19 @@ package meritserver.models
 import java.time.{LocalDate, LocalDateTime}
 import java.util.UUID
 
+import meritserver.services.TeamService
 import spray.json.DefaultJsonProtocol
 
 import scala.util.Try
 
 case class User(id: String = UUID.randomUUID().toString,
+                teamId: String,
                 familyName: String,
                 firstName: String,
                 balance: Int = 0)
+
 case class CreateUser(id: Option[String],
+                      teamId: String,
                       familyName: String,
                       firstName: String) {
   require(id match {
@@ -20,6 +24,12 @@ case class CreateUser(id: Option[String],
   }, "id must not be empty")
   require(!familyName.isEmpty, "familyName must not be empty")
   require(!firstName.isEmpty, "firstName must not be empty")
+  require(TeamService.getTeams.exists(_.id == teamId), s"Provided Team does not exist")
+}
+
+case class Team(id: String = UUID.randomUUID().toString, name: String)
+case class CreateTeam(id: Option[String], name: String) {
+  require(!name.isEmpty, "name must not be empty")
 }
 
 case class Transaction(id: String = UUID.randomUUID().toString,
@@ -39,7 +49,12 @@ case class CreateTransaction(from: String,
   require(!reason.isEmpty, "A reason would be nice!")
 }
 
-case class Merit(userId: String, name: String, received: Int, sent: Int, available: Int)
+case class Merit(userId: String,
+                 teamId: String,
+                 name: String,
+                 received: Int,
+                 sent: Int,
+                 available: Int)
 
 trait Model2Json extends DefaultJsonProtocol {
   import spray.json.{DeserializationException, JsString, JsValue, RootJsonFormat}
@@ -56,12 +71,14 @@ trait Model2Json extends DefaultJsonProtocol {
     override def write(date: LocalDateTime): JsValue = JsString(date.toString)
   }
 
-  implicit val userFormat: RootJsonFormat[User] = jsonFormat4(User)
-  implicit val createUserFormat: RootJsonFormat[CreateUser] = jsonFormat3(
+  implicit val userFormat: RootJsonFormat[User] = jsonFormat5(User)
+  implicit val createUserFormat: RootJsonFormat[CreateUser] = jsonFormat4(
     CreateUser)
+  implicit val teamFormat: RootJsonFormat[Team] = jsonFormat2(Team)
+  implicit val createTeamFormat: RootJsonFormat[CreateTeam] = jsonFormat2(CreateTeam)
   implicit val transactionFormat: RootJsonFormat[Transaction] = jsonFormat7(
     Transaction)
   implicit val createTransactionFormat: RootJsonFormat[CreateTransaction] =
     jsonFormat4(CreateTransaction)
-  implicit val meritFormat: RootJsonFormat[Merit] = jsonFormat5(Merit)
+  implicit val meritFormat: RootJsonFormat[Merit] = jsonFormat6(Merit)
 }

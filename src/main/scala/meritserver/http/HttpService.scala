@@ -2,10 +2,11 @@ package meritserver.http
 
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import meritserver.http.routes.{FileServiceRoute, MeritServiceRoute, TransactionServiceRoute, UserServiceRoute}
+import meritserver.http.routes._
 
 trait HttpService
-  extends UserServiceRoute
+    extends UserServiceRoute
+    with TeamServiceRoute
     with TransactionServiceRoute
     with MeritServiceRoute
     with FileServiceRoute {
@@ -14,7 +15,7 @@ trait HttpService
 
   val routes: Route = cors() {
     pathPrefix("v1") {
-      usersRoute ~ transactionsRoute ~ meritsRoute
+      usersRoute ~ teamRoute ~ transactionsRoute ~ meritsRoute
     } ~ staticFileRoute
   }
 }

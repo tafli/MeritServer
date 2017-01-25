@@ -68,8 +68,11 @@ trait UserService {
       .map(
         pId =>
           User(id = pId,
+               teamId = pUser.teamId,
                familyName = pUser.familyName,
                firstName = pUser.firstName))
       .getOrElse(
-        User(familyName = pUser.familyName, firstName = pUser.firstName))
+        User(teamId = pUser.teamId,
+             familyName = pUser.familyName,
+             firstName = pUser.firstName))
 }

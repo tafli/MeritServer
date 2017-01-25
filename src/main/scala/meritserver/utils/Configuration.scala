@@ -6,12 +6,13 @@ trait Configuration {
   private val config     = ConfigFactory.load()
   private val httpConfig = config.getConfig("http")
 
-  val httpInterface = httpConfig.getString("interface")
-  val httpPort      = httpConfig.getInt("port")
+  val httpInterface: String = httpConfig.getString("interface")
+  val httpPort: Int = httpConfig.getInt("port")
 
-  val meritStartAmount      = config.getInt("merit.startAmount")
-  val meritUsersFile        = config.getString("merit.usersFile")
-  val meritTransactionsFile = config.getString("merit.transactionsFile")
+  val meritStartAmount: Int = config.getInt("merit.startAmount")
+  val meritUsersFile: String = config.getString("merit.usersFile")
+  val meritTeamsFile: String = config.getString("merit.teamsFile")
+  val meritTransactionsFile: String = config.getString("merit.transactionsFile")
 
-  val payoutThreshold = config.getDouble("merit.payoutThreshold")
+  val payoutThreshold: Double = config.getDouble("merit.payoutThreshold")
 }

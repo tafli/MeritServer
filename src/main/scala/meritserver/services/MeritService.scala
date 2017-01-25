@@ -8,6 +8,7 @@ object MeritService {
     UserService.userAgent.get.map(user =>
         Merit(
           userId = user.id,
+          teamId = user.teamId,
           name = s"${user.firstName} ${user.familyName}",
           received = user.balance + TransactionService.transactionAgent.get
               .filter(_.to == user.id)

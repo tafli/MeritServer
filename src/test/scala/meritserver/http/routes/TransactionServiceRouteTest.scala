@@ -7,16 +7,16 @@ import spray.json.JsArray
 
 class TransactionServiceRouteTest extends ServiceTest {
 
-  "The service for the users path" when {
-    "calling GET /v1/transactions" should {
+  "The service for the transactions path" when {
+    s"calling GET /$apiVersion/transactions" should {
       "return an empty transaction list" in {
-        Get("/transactions") ~> transactionsRoute ~> check {
+        Get(s"/$apiVersion/transactions") ~> routes ~> check {
           responseAs[JsArray] shouldEqual JsArray()
         }
       }
       "return all transactions" in withUsers(4) { users =>
         withTransactions(users) { transactions =>
-          Get("/transactions") ~> transactionsRoute ~> check {
+          Get(s"/$apiVersion/transactions") ~> routes ~> check {
             val response = responseAs[JsArray]
             response.elements.size shouldEqual transactions.length
           }
@@ -28,8 +28,8 @@ class TransactionServiceRouteTest extends ServiceTest {
         "created" in withUsers(2) { users =>
           val transaction = CreateTransaction(from = users.head.id,
                                               to = users.tail.head.id,
-                                              1,
-                                              "Ex, its just a test!")
+                                              amount = 1,
+                                              reason = "Ey, its just a test!")
           Post(
             s"/$apiVersion/transactions",
             transaction
