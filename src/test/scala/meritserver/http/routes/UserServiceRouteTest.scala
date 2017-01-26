@@ -4,6 +4,7 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, MediaTypes}
 import meritserver.models.User
 import meritserver.services.TransactionService
+import meritserver.services.TransactionService.NoFilter
 import org.scalatest.Assertion
 import org.scalatest.exceptions.TestFailedException
 import spray.json.JsArray
@@ -195,7 +196,7 @@ class UserServiceRouteTest extends ServiceTest {
 
             Delete(s"/$apiVersion/users") ~> routes ~> check {
               status shouldBe NoContent
-              getTransactions.length shouldBe 0
+              getTransactions(NoFilter).length shouldBe 0
               TransactionService.transactionAgent.get.length shouldBe 0
             }
           }
