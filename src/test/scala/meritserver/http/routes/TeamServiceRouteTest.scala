@@ -2,7 +2,8 @@ package meritserver.http.routes
 
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
-import meritserver.models.Team
+import meritserver.models.{CreateTeam, Team}
+import meritserver.services.TeamService
 import org.scalatest.Assertion
 import org.scalatest.exceptions.TestFailedException
 import spray.json.JsArray
@@ -25,29 +26,31 @@ class TeamServiceRouteTest extends ServiceTest {
     }
     "calling POST /v1/teams" should {
       "return newly created transaction" when {
-        "sent without ID" in {
-          val team = Team(name = "T3")
+        "sent with start amount" in withTeam() { teams =>
+          val team = CreateTeam(name = "T3", startAmount = Some(12))
           Post(
             s"/$apiVersion/teams",
             team
           ) ~> routes ~> check {
             status shouldBe Created
-            assertTeam(responseAs[Team], team)
+            assertTeam(responseAs[Team], Team(name = team.name, startAmount = 12))
+            TeamService.teamAgent.get.length shouldEqual 1
           }
         }
-        "sent with ID" in {
-          val team = Team(id = "T3", name = "T3 - Best team ever!")
+        "sent without start amount" in withTeam() { teams =>
+          val team = CreateTeam(name = "T3", startAmount = None)
           Post(
             s"/$apiVersion/teams",
             team
           ) ~> routes ~> check {
             status shouldBe Created
-            assertTeam(responseAs[Team], team)
+            assertTeam(responseAs[Team], Team(name = team.name, startAmount = 11))
+            TeamService.teamAgent.get.length shouldEqual 1
           }
         }
       }
       "fail" when {
-        "sent without team name defined" in {
+        "sent without team name defined" in withTeam() { teams =>
           val exception = intercept[TestFailedException] {
             Post(
               s"/$apiVersion/teams",
@@ -60,20 +63,59 @@ class TeamServiceRouteTest extends ServiceTest {
           }
 
           assert(exception.message.get.contains("Object is missing required member 'name'"))
+          TeamService.teamAgent.get.length shouldEqual 0
         }
-        "sent with empty team name" in {
+        "sent with empty team name" in withTeam() { teams =>
           val exception = intercept[TestFailedException] {
             Post(
               s"/$apiVersion/teams",
               HttpEntity(
                 ContentTypes.`application/json`,
-                """{"name":""}""")
+                """{"id":"T3", "name":""}""")
             ) ~> routes ~> check {
               status shouldBe Created
             }
           }
 
           assert(exception.message.get.contains("name must not be empty"))
+          TeamService.teamAgent.get.length shouldEqual 0
+        }
+      }
+    }
+    "calling PUT /v1/teams/t3" should {
+      "return newly create team" when {
+        "sent with start amount" in withTeam() { teams =>
+          val team = CreateTeam(name = "T3", startAmount = Some(12))
+          Put(
+            s"/$apiVersion/teams/t3",
+            team
+          ) ~> routes ~> check {
+            status shouldBe Created
+            assertTeam(responseAs[Team], Team(id = "t3", name = team.name, startAmount = 12))
+            TeamService.teamAgent.get.length shouldEqual 1
+          }
+        }
+        "sent without start amount" in withTeam() { teams =>
+          val team = CreateTeam(name = "T3", startAmount = None)
+          Put(
+            s"/$apiVersion/teams/t3",
+            team
+          ) ~> routes ~> check {
+            status shouldBe Created
+            assertTeam(responseAs[Team], Team(id = "t3", name = team.name, startAmount = 11))
+            TeamService.teamAgent.get.length shouldEqual 1
+          }
+        }
+      }
+      "updates team" in withTeam("fcd") { teams =>
+        val team = CreateTeam(name = "T3", startAmount = Some(12))
+        Put(
+          s"/$apiVersion/teams/${teams.head.id}",
+          team
+        ) ~> routes ~> check {
+          status shouldBe OK
+          assertTeam(responseAs[Team], Team(id = "t3", name = team.name, startAmount = 12))
+          TeamService.teamAgent.get.length shouldEqual 1
         }
       }
     }
@@ -81,7 +123,7 @@ class TeamServiceRouteTest extends ServiceTest {
 
   private def assertTeam(response: Team, against: Team): Assertion = {
     assert(
-      response.id.length > 0 && response.name == against.name
+      response.id.length > 0 && response.name == against.name && response.startAmount == against.startAmount
     )
   }
 }

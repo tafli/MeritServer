@@ -1,6 +1,6 @@
 package meritserver.services
 
-import meritserver.models.{Model2Json, Team, Transaction, User}
+import meritserver.models._
 import meritserver.utils.Configuration
 import spray.json._
 
@@ -28,8 +28,7 @@ object DataAccessService extends Configuration with Model2Json {
       .filter(_.length >= 2)
       .map(_.parseJson) match {
       case Some(json: JsValue) => json.convertTo[List[Team]]
-      case Some(_)             => List[Team]()
-      case None                => List[Team]()
+      case _                   => List[Team]()
     }
   }
 

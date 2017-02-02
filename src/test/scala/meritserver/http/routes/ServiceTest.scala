@@ -54,7 +54,7 @@ class ServiceTest
   def withTeam(teamName: String*)(test: List[Team] => Any): Any = {
     val list =(for {
       name <- teamName
-      team = Team(id = name, name = name)
+      team = Team(id = name, name = name, startAmount = 42)
     } yield team).toList
 
     test(Await.result(TeamService.teamAgent.alter(list), 1 second))

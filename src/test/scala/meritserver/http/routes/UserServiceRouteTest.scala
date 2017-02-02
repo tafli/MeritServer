@@ -3,8 +3,8 @@ package meritserver.http.routes
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, MediaTypes}
 import meritserver.models.User
-import meritserver.services.TransactionService
 import meritserver.services.TransactionService.NoFilter
+import meritserver.services.{TransactionService, UserService}
 import org.scalatest.Assertion
 import org.scalatest.exceptions.TestFailedException
 import spray.json.JsArray
@@ -12,7 +12,7 @@ import spray.json.JsArray
 class UserServiceRouteTest extends ServiceTest {
 
   "The service for the users path" when {
-    s"calling GET /$apiVersion/users" should {
+    "calling GET /v1/users" should {
       "return an empty user list" in withUsers(0) { users =>
         Get(s"/$apiVersion/users") ~> routes ~> check {
           status shouldBe OK
@@ -27,7 +27,7 @@ class UserServiceRouteTest extends ServiceTest {
       }
     }
 
-    s"calling POST /$apiVersion/users" should {
+    "calling POST /v1/users" should {
       "return newly created user" when {
         "created without ID" in withTeam("T3") { teams =>
           Post(
@@ -59,16 +59,6 @@ class UserServiceRouteTest extends ServiceTest {
         }
       }
       "fail" when {
-        "user with same ID already exists" in withUsers(1) { users =>
-          Post(
-            s"/$apiVersion/users",
-            HttpEntity(
-              ContentTypes.`application/json`,
-              s"""{"id":"${users.head.id}","teamId":"${users.head.teamId}","familyName":"FamilyName","firstName":"FirstName"}""")
-          ) ~> routes ~> check {
-            status shouldBe Conflict
-          }
-        }
         "user has no Team assigned" in {
           val exception = intercept[TestFailedException] {
             Post(
@@ -80,7 +70,9 @@ class UserServiceRouteTest extends ServiceTest {
             }
           }
 
-          assert(exception.message.get.contains("Object is missing required member 'teamId'"))
+          assert(
+            exception.message.get
+              .contains("Object is missing required member 'teamId'"))
         }
         "user has no existing Team assigned" in withTeam("T3") { teams =>
           val exception = intercept[TestFailedException] {
@@ -94,35 +86,42 @@ class UserServiceRouteTest extends ServiceTest {
             }
           }
 
-          assert(exception.message.get.contains("Provided Team does not exist"))
+          assert(
+            exception.message.get.contains("Provided Team does not exist"))
         }
         "create User with no familyName" in withTeam("T3") { teams =>
           val exception = intercept[TestFailedException] {
-            Post(
-              s"/$apiVersion/users",
-              HttpEntity(MediaTypes.`application/json`,
-                         """{"teamId":"T3", "firstName":"Andreas"}""")) ~> routes ~> check {
+            Post(s"/$apiVersion/users",
+                 HttpEntity(
+                   MediaTypes.`application/json`,
+                   """{"teamId":"T3", "firstName":"Andreas"}""")) ~> routes ~> check {
               status shouldBe Created
             }
           }
 
-          assert(exception.message.get.contains("Object is missing required member 'familyName')"))
+          assert(
+            exception.message.get
+              .contains("Object is missing required member 'familyName')"))
         }
         "create User with no firstName" in withTeam("T3") { teams =>
           val exception = intercept[TestFailedException] {
-            Post(s"/$apiVersion/users",
-                 HttpEntity(MediaTypes.`application/json`,
-                            """{"teamId":"T3","familyName":"Boss"}""")) ~> routes ~> check {
+            Post(
+              s"/$apiVersion/users",
+              HttpEntity(
+                MediaTypes.`application/json`,
+                """{"teamId":"T3","familyName":"Boss"}""")) ~> routes ~> check {
               status shouldBe OK
             }
           }
 
-          assert(exception.message.get.contains("Object is missing required member 'firstName')"))
+          assert(
+            exception.message.get
+              .contains("Object is missing required member 'firstName')"))
         }
       }
     }
 
-    s"calling PUT /$apiVersion/users" should {
+    "calling PUT /v1/users" should {
       "return list of newly created user" when {
         "no user is already stored" in withTeam("T3") { teams =>
           Put(
@@ -167,19 +166,59 @@ class UserServiceRouteTest extends ServiceTest {
               userList.length shouldBe 2
 
               assertUser(userList.head,
-                User(teamId = "T3",
-                  familyName = "NewFamilyName1",
-                  firstName = "NewFirstName1"))
+                         User(teamId = "T3",
+                              familyName = "NewFamilyName1",
+                              firstName = "NewFirstName1"))
               assertUser(userList.tail.head,
-                User(teamId = "T3",
-                  familyName = "NewFamilyName2",
-                  firstName = "NewFirstName2"))
+                         User(teamId = "T3",
+                              familyName = "NewFamilyName2",
+                              firstName = "NewFirstName2"))
             }
           }
         }
       }
     }
-    s"calling DELETE /$apiVersion/users" should {
+    "calling PUT /v1/users/dduck" should {
+      "return newly created user" when {
+        "no user is already stored" in withTeam("T3") { teams =>
+          Put(
+            s"/$apiVersion/users/dduck",
+            HttpEntity(
+              ContentTypes.`application/json`,
+              """{"teamId":"T3","familyName":"Duck","firstName":"Donald"}"""
+            )
+          ) ~> routes ~> check {
+            status shouldBe Created
+
+            val user = responseAs[User]
+
+            assertUser(user,
+                       User(id = "dduck",
+                            teamId = "T3",
+                            familyName = "Duck",
+                            firstName = "Donald"))
+          }
+        }
+      }
+      "fail" when {
+        "user already exists" in withTeam("T3") { teams =>
+          withUsers(1) { users =>
+            Put(
+              s"/$apiVersion/users/${users.head.id}",
+              HttpEntity(
+                ContentTypes.`application/json`,
+                s"""{"teamId":"${teams.head.id}","familyName":"Duck","firstName":"Donald"}"""
+              )
+            ) ~> routes ~> check {
+              status shouldBe Conflict
+
+              UserService.userAgent.get.length shouldBe 1
+            }
+          }
+        }
+      }
+    }
+    "calling DELETE /v1/users" should {
       "delete everything" when {
         "no data is present at all" in {
           Delete(s"/$apiVersion/users") ~> routes ~> check {
@@ -203,7 +242,7 @@ class UserServiceRouteTest extends ServiceTest {
         }
       }
     }
-    s"calling GET /$apiVersion/users/{id}" should {
+    "calling GET /v1/users/{id}" should {
       "return user" in withUsers(1) { users =>
         Get(s"/$apiVersion/users/${users.head.id}") ~> routes ~> check {
           status shouldBe OK

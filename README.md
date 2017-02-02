@@ -28,7 +28,13 @@ Download sources an use `sbt run` to compile an run the project. By default the 
 
 ## API Reference
 
-### GET `http://<server>:9000/v1/teams`
+### Teams
+
+A Team consist of an `id`, a `name` and a `startAmount` of Merits for each round. The `id` and `startAmount` are optional values
+and may be not provided when creating a new ressource. In that case, these values are generated as for the `id` or
+is taken from the configuration with a base value for `startAmount`.
+
+#### GET `http://<server>:9000/v1/teams`
 
 Returns all teams.
 
@@ -46,7 +52,7 @@ curl --request GET \
 ]
 ```
 
-### POST `http://<server>:9000/v1/teams`
+#### POST `http://<server>:9000/v1/teams`
 
 Creates a team.
 
@@ -63,12 +69,42 @@ curl --request POST \
 ```json
 [
     {
-      "name": "FC Duckingburgh"
+      "id": "6331929a-7587-43e6-a4d8-3a266f48edcf",
+      "name": "FC Duckingburgh",
+      "startAmount": 11
     }
 ]
 ```
 
-### GET `http://<server>:9000/v1/users`
+#### PUT `http://<server>/v1/teams/{id}`
+
+Creates a team with a specific ID.
+```bash
+curl --request PUT \
+  --url http://localhost:9000/v1/teams/fcb \
+  --header 'content-type: application/json' \
+  --data '{
+	"name":"FC Duckburgh - The best team ever!",
+	"startAmount" : 25
+}'
+```
+
+```json
+{
+	"id": "fcd",
+	"name": "FC Duckburgh - The best team ever!",
+	"startAmount": 25
+}
+```
+
+### Users
+
+A user does have a `id`, a `teamId`, a `familyName` and `firstName` and a `balance`. The `id` is optinal and is
+generated when using a `POST` create a new user. The `teamId` referst to a existing team and must exist in the system.
+The `balance` itself is a special value. In case of a payday without payout, the amount of merits earning the last round
+is booked onto balance and might be  payd out next payday.
+
+#### GET `http://<server>:9000/v1/users`
 
 Returns all users.
 
@@ -96,7 +132,7 @@ curl --request GET \
 ]
 ```
 
-### PUT `http://<server>:9000/v1/users`
+#### PUT `http://<server>:9000/v1/users`
 
 Accepts an array of users. Current users are deleted and replaced by the new ones.
 
@@ -134,9 +170,9 @@ curl --request PUT \
 ]
 ```
 
-### POST `http://<server>:9000/v1/users`
+#### POST `http://<server>:9000/v1/users`
 
-Creates a new user. This user is added to the current users.
+Creates a new user. This user is added to the current list of users.
 
 ```bash
 curl --request POST \
@@ -159,7 +195,7 @@ curl --request POST \
 }
 ```
 
-### GET `http://<server>:9000/v1/users/{id}`
+#### GET `http://<server>:9000/v1/users/{id}`
 
 Returns a specific user identified by {id}.
 
@@ -178,7 +214,9 @@ curl --request GET \
 }
 ```
 
-### GET `http://<server>:9000/v1/transactions`
+### Transactions
+
+#### GET `http://<server>:9000/v1/transactions`
 
 Returns all transactions.
 
@@ -201,7 +239,7 @@ curl --request GET \
 ]
 ```
 
-### POST `http://<server>:9000/v1/transactions`
+#### POST `http://<server>:9000/v1/transactions`
 
 Creates a new transaction.
 
@@ -229,7 +267,7 @@ curl --request POST \
 }
 ```
 
-### GET `http://<server>:9000/v1/transactions/{id}`
+#### GET `http://<server>:9000/v1/transactions/{id}`
 
 Returns a specific transaction identified by {id}.
 
@@ -250,7 +288,7 @@ curl --request GET \
 }
 ```
 
-### DELETE `http://<server>:9000/v1/transactions/{id}`
+#### DELETE `http://<server>:9000/v1/transactions/{id}`
 
 Deletes a transaction specified by {id}.
 
@@ -259,7 +297,9 @@ curl --request DELETE \
   --url http://localhost:9000/v1/transactions/3eb595f4-40a1-42bd-bceb-9a39164e0161
 ```
 
-### GET `http://<server>:9000/v1/merits`
+### Merits
+
+#### GET `http://<server>:9000/v1/merits`
 
 Returns for all users a list of all received merits since last payout.
 
@@ -283,7 +323,7 @@ curl --request GET \
 ]
 ```
 
-### POST `http://<server>:9000/v1/merits/payday`
+#### POST `http://<server>:9000/v1/merits/payday`
 
 Based on a random number a payout is decided. The payout-list for all user is returned.
 

@@ -1,7 +1,7 @@
 package meritserver.services
 
 import akka.agent.Agent
-import meritserver.models.{CreateUser, User}
+import meritserver.models.User
 import meritserver.utils.Configuration
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -39,40 +39,25 @@ trait UserService {
     }
   }
 
-  def createUser(pUser: CreateUser): Try[User] = {
-    val newUser: User = mapUser(pUser)
-    UserService.userAgent.get.count(_.id == newUser.id) match {
+  def createUser(pUser: User): Try[User] = {
+    UserService.userAgent.get.count(_.id == pUser.id) match {
       case 0 =>
-        UserService.userAgent.alter(_ :+ newUser).foreach { users =>
+        UserService.userAgent.alter(_ :+ pUser).foreach { users =>
           DataAccessService.saveUsers(users)
         }
-        Success(newUser)
+        Success(pUser)
       case _ =>
-        println("Got that User already")
         Failure(
           new IllegalArgumentException("User with this ID already exists!"))
     }
   }
 
-  def createUsers(pUsers: List[CreateUser]): Future[List[User]] = {
+  def createUsers(pUsers: List[User]): Future[List[User]] = {
     val usersFuture =
-      UserService.userAgent.alter(pUsers.map(user => mapUser(user)))
+      UserService.userAgent.alter(pUsers)
     usersFuture.foreach { users =>
       DataAccessService.saveUsers(users)
     }
     usersFuture
   }
-
-  private def mapUser(pUser: CreateUser): User =
-    pUser.id
-      .map(
-        pId =>
-          User(id = pId,
-               teamId = pUser.teamId,
-               familyName = pUser.familyName,
-               firstName = pUser.firstName))
-      .getOrElse(
-        User(teamId = pUser.teamId,
-             familyName = pUser.familyName,
-             firstName = pUser.firstName))
 }

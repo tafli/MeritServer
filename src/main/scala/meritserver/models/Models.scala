@@ -24,11 +24,13 @@ case class CreateUser(id: Option[String],
   }, "id must not be empty")
   require(!familyName.isEmpty, "familyName must not be empty")
   require(!firstName.isEmpty, "firstName must not be empty")
-  require(TeamService.getTeams.exists(_.id == teamId), s"Provided Team does not exist")
+  require(TeamService.getTeams.exists(_.id == teamId),
+          s"Provided Team does not exist")
 }
 
-case class Team(id: String = UUID.randomUUID().toString, name: String)
-case class CreateTeam(id: Option[String], name: String) {
+case class Team(id: String = UUID.randomUUID().toString, name: String, startAmount: Int)
+case class CreateTeam(name: String,
+                      startAmount: Option[Int]) {
   require(!name.isEmpty, "name must not be empty")
 }
 
@@ -74,8 +76,8 @@ trait Model2Json extends DefaultJsonProtocol {
   implicit val userFormat: RootJsonFormat[User] = jsonFormat5(User)
   implicit val createUserFormat: RootJsonFormat[CreateUser] = jsonFormat4(
     CreateUser)
-  implicit val teamFormat: RootJsonFormat[Team] = jsonFormat2(Team)
-  implicit val createTeamFormat: RootJsonFormat[CreateTeam] = jsonFormat2(CreateTeam)
+  implicit val teamFormat: RootJsonFormat[Team]         = jsonFormat3(Team)
+  implicit val postTeamFormat: RootJsonFormat[CreateTeam] = jsonFormat2(CreateTeam)
   implicit val transactionFormat: RootJsonFormat[Transaction] = jsonFormat7(
     Transaction)
   implicit val createTransactionFormat: RootJsonFormat[CreateTransaction] =

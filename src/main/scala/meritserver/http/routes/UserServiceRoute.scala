@@ -4,7 +4,7 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import meritserver.models.{CreateUser, Model2Json}
+import meritserver.models.{CreateUser, Model2Json, User}
 import meritserver.services.UserService
 
 import scala.util.{Failure, Success}
@@ -21,8 +21,11 @@ trait UserServiceRoute
         complete(getUsers)
       } ~
         post {
-          entity(as[CreateUser]) { user =>
-            createUser(user) match {
+          entity(as[CreateUser]) { pUser =>
+            createUser(
+              User(teamId = pUser.teamId,
+                   familyName = pUser.familyName,
+                   firstName = pUser.firstName)) match {
               case Success(user) => complete(StatusCodes.Created, user)
               case Failure(ex)   => complete(StatusCodes.Conflict, ex.getMessage)
             }
@@ -30,7 +33,12 @@ trait UserServiceRoute
         } ~
         put {
           entity(as[List[CreateUser]]) { users =>
-            complete(StatusCodes.Created, createUsers(users))
+            complete(StatusCodes.Created,
+                     createUsers(
+                       users.map(u =>
+                         User(teamId = u.teamId,
+                              familyName = u.familyName,
+                              firstName = u.firstName))))
           }
         } ~
         delete {
@@ -43,6 +51,13 @@ trait UserServiceRoute
           getUserById(id) match {
             case Some(user) => complete(user)
             case None       => complete(StatusCodes.NotFound)
+          }
+        } ~ put {
+          entity(as[CreateUser]) { pUser =>
+            createUser(User(id, pUser.teamId, pUser.familyName, pUser.firstName)) match {
+              case Success(user) => complete(StatusCodes.Created, user)
+              case Failure(ex)   => complete(StatusCodes.Conflict, ex.getMessage)
+            }
           }
         }
       }

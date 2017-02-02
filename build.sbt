@@ -2,13 +2,13 @@ name := """MeritServer"""
 organization := "tafli"
 scalaVersion := "2.12.1"
 
-version := "0.3.0"
+version := "0.4.0"
 
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 
 libraryDependencies ++= {
   val akkaVersion         = "2.4.16"
-  val akkaHttpVersion     = "10.0.1"
+  val akkaHttpVersion     = "10.0.3"
   val akkaHttpCorsVersion = "0.1.10"
   val scalaTestVersion    = "3.0.1"
 
