@@ -9,7 +9,7 @@ class TransactionServiceRouteTest extends ServiceTest {
 
   "The service for the transactions path" when {
     s"calling GET /$apiVersion/transactions" should {
-      "return an empty transaction list" in {
+      "return an empty transaction list" in withTransactions(List()) { transactions =>
         Get(s"/$apiVersion/transactions") ~> routes ~> check {
           responseAs[JsArray] shouldEqual JsArray()
         }
