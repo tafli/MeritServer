@@ -102,7 +102,7 @@ curl --request PUT \
 A user does have a `id`, a `teamId`, a `familyName` and `firstName` and a `balance`. The `id` is optinal and is
 generated when using a `POST` create a new user. The `teamId` referst to a existing team and must exist in the system.
 The `balance` itself is a special value. In case of a payday without payout, the amount of merits earning the last round
-is booked onto balance and might be  payd out next payday.
+is booked onto balance and might be  paid out next payday.
 
 #### GET `http://<server>:9000/v1/users`
 
