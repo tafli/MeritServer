@@ -299,13 +299,13 @@ curl --request DELETE \
 
 ### Merits
 
-#### GET `http://<server>:9000/v1/merits`
+#### GET `http://<server>:9000/v1/merits/{teamId}`
 
 Returns for all users a list of all received merits since last payout.
 
 ```bash
 curl --request GET \
-  --url http://localhost:9000/v1/merits
+  --url http://localhost:9000/v1/merits/fcd
 ```
 
 ```json
@@ -323,13 +323,13 @@ curl --request GET \
 ]
 ```
 
-#### POST `http://<server>:9000/v1/merits/payday`
+#### POST `http://<server>:9000/v1/merits/{teamId}/payday`
 
 Based on a random number a payout is decided. The payout-list for all user is returned.
 
 ```bash
 curl --request POST \
-  --url http://localhost:9000/v1/merits/payday
+  --url http://localhost:9000/v1/merits/fcd/payday
 ```
 Payday:
 ```json

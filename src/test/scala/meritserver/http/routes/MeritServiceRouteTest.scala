@@ -1,6 +1,7 @@
 package meritserver.http.routes
 
 import akka.http.scaladsl.model.StatusCodes._
+import meritserver.services.TransactionService.NoFilter
 import spray.json.JsArray
 
 class MeritServiceRouteTest extends ServiceTest {
@@ -36,6 +37,56 @@ class MeritServiceRouteTest extends ServiceTest {
         "team does not exist" in withTeam() { teams =>
           Get(s"/$apiVersion/merits/fcd") ~> routes ~> check {
             status shouldBe NotFound
+          }
+        }
+      }
+    }
+    "calling POST /v1/merits/fcd/payday" should {
+      "calculate correctly" when {
+        "not paying out" in withTeam("fcd") { teams =>
+          withUsers(5) { users =>
+            Post(s"/$apiVersion/merits/fcd/payday?pt=0") ~> routes ~> check {
+              status shouldBe OK
+              responseAs[JsArray] shouldEqual JsArray()
+            }
+          }
+        }
+        "not paying out with transactions" in withTeam("fcd") { teams =>
+          withUsers(5) { users =>
+            withTransactions(users) { transactions =>
+              Post(s"/$apiVersion/merits/fcd/payday?pt=0") ~> routes ~> check {
+                status shouldBe OK
+                responseAs[JsArray] shouldEqual JsArray()
+
+                getUsers.count(_.balance == 0) shouldEqual 1
+
+                getTransactions(NoFilter).size shouldEqual 4
+                getTransactions(NoFilter).filterNot(_.booked).size shouldEqual 0
+              }
+            }
+          }
+        }
+        "paying out with no transactions" in withTeam("fcd") { teams =>
+          withUsers(5) { users =>
+            Post(s"/$apiVersion/merits/fcd/payday?pt=1") ~> routes ~> check {
+              status shouldBe OK
+              responseAs[JsArray].elements.size shouldEqual 5
+            }
+          }
+        }
+        "paying out with transactions" in withTeam("fcd") { teams =>
+          withUsers(5) { users =>
+            withTransactions(users) { transactions =>
+              Post(s"/$apiVersion/merits/fcd/payday?pt=1") ~> routes ~> check {
+                status shouldBe OK
+                responseAs[JsArray].elements.size shouldEqual 5
+
+                getUsers.count(_.balance == 0) shouldEqual users.size
+
+                getTransactions(NoFilter).size shouldEqual 4
+                getTransactions(NoFilter).filterNot(_.booked).size shouldEqual 0
+              }
+            }
           }
         }
       }

@@ -37,14 +37,13 @@ class ServiceTest
 
     test(Await.result(UserService.userAgent.alter(list), 1 second))
   }
-  def withTransactions(users: List[User])(
-      test: List[Transaction] => Any): Any = {
 
+  def withTransactions(users: List[User])(test: List[Transaction] => Any): Any = {
     val list = (for {
       i <- 0 until users.length - 1
       transaction = Transaction(from = users(i).id,
                                 to = users(i + 1).id,
-                                amount = i,
+                                amount = i+1,
                                 reason = "Hey, just testing!")
     } yield transaction).toList
 

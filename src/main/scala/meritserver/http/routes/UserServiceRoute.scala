@@ -1,5 +1,7 @@
 package meritserver.http.routes
 
+import java.util.UUID
+
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
@@ -10,7 +12,7 @@ import meritserver.services.UserService
 import scala.util.{Failure, Success}
 
 trait UserServiceRoute
-    extends UserService
+  extends UserService
     with BaseServiceRoute
     with SprayJsonSupport
     with Model2Json {
@@ -24,21 +26,22 @@ trait UserServiceRoute
           entity(as[CreateUser]) { pUser =>
             createUser(
               User(teamId = pUser.teamId,
-                   familyName = pUser.familyName,
-                   firstName = pUser.firstName)) match {
+                familyName = pUser.familyName,
+                firstName = pUser.firstName)) match {
               case Success(user) => complete(StatusCodes.Created, user)
-              case Failure(ex)   => complete(StatusCodes.Conflict, ex.getMessage)
+              case Failure(ex) => complete(StatusCodes.Conflict, ex.getMessage)
             }
           }
         } ~
         put {
           entity(as[List[CreateUser]]) { users =>
             complete(StatusCodes.Created,
-                     createUsers(
-                       users.map(u =>
-                         User(teamId = u.teamId,
-                              familyName = u.familyName,
-                              firstName = u.firstName))))
+              createUsers(
+                users.map(u =>
+                  User(id = u.id.getOrElse(UUID.randomUUID().toString),
+                    teamId = u.teamId,
+                    familyName = u.familyName,
+                    firstName = u.firstName))))
           }
         } ~
         delete {
@@ -50,13 +53,13 @@ trait UserServiceRoute
         get {
           getUserById(id) match {
             case Some(user) => complete(user)
-            case None       => complete(StatusCodes.NotFound)
+            case None => complete(StatusCodes.NotFound)
           }
         } ~ put {
           entity(as[CreateUser]) { pUser =>
             createUser(User(id, pUser.teamId, pUser.familyName, pUser.firstName)) match {
               case Success(user) => complete(StatusCodes.Created, user)
-              case Failure(ex)   => complete(StatusCodes.Conflict, ex.getMessage)
+              case Failure(ex) => complete(StatusCodes.Conflict, ex.getMessage)
             }
           }
         }

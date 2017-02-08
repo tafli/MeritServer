@@ -8,7 +8,7 @@ import meritserver.models.Model2Json
 import meritserver.services.{MeritService, TeamService}
 
 trait MeritServiceRoute
-    extends MeritService
+  extends MeritService
     with BaseServiceRoute
     with SprayJsonSupport
     with Model2Json {
@@ -18,17 +18,20 @@ trait MeritServiceRoute
       get {
         complete(getMerits)
       }
-    } ~
-      path(Segment) { teamId: String =>
+    } ~ pathPrefix(Segment) { teamId: String =>
+      pathEndOrSingleSlash {
         get {
           TeamService.getTeamById(teamId) match {
             case Some(_) => complete(getMeritsForTeam(teamId))
             case _ => complete(NotFound)
           }
         }
-      } ~ (path(Segment) & path("payday")) { teamId =>
-      post {
-        complete(payout())
+      } ~ path("payday") {
+        parameters('pt.as[Double].?) { pt =>
+          post {
+            complete(payout(teamId, pt))
+          }
+        }
       }
     }
   }
