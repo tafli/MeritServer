@@ -1,10 +1,11 @@
 package meritserver.http.routes
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import meritserver.models.Model2Json
-import meritserver.services.MeritService
+import meritserver.services.{MeritService, TeamService}
 
 trait MeritServiceRoute
     extends MeritService
@@ -18,10 +19,17 @@ trait MeritServiceRoute
         complete(getMerits)
       }
     } ~
-      path("payday") {
-        post {
-          complete(payout())
+      path(Segment) { teamId: String =>
+        get {
+          TeamService.getTeamById(teamId) match {
+            case Some(_) => complete(getMeritsForTeam(teamId))
+            case _ => complete(NotFound)
+          }
         }
+      } ~ (path(Segment) & path("payday")) { teamId =>
+      post {
+        complete(payout())
       }
+    }
   }
 }

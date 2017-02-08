@@ -15,4 +15,6 @@ trait Configuration {
   val meritTransactionsFile: String = config.getString("merit.transactionsFile")
 
   val payoutThreshold: Double = config.getDouble("merit.payoutThreshold")
+
+  val masterKey: String = config.getString("merit.auth.masterKey")
 }

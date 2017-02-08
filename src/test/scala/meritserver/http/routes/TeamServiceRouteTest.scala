@@ -33,7 +33,7 @@ class TeamServiceRouteTest extends ServiceTest {
             team
           ) ~> routes ~> check {
             status shouldBe Created
-            assertTeam(responseAs[Team], Team(name = team.name, startAmount = 12))
+            assertTeam(responseAs[Team], Team(name = team.name, startAmount = 12, authToken = responseAs[Team].authToken))
             TeamService.teamAgent.get.length shouldEqual 1
           }
         }
@@ -44,7 +44,7 @@ class TeamServiceRouteTest extends ServiceTest {
             team
           ) ~> routes ~> check {
             status shouldBe Created
-            assertTeam(responseAs[Team], Team(name = team.name, startAmount = 11))
+            assertTeam(responseAs[Team], Team(name = team.name, startAmount = 11, authToken = responseAs[Team].authToken))
             TeamService.teamAgent.get.length shouldEqual 1
           }
         }
@@ -91,7 +91,7 @@ class TeamServiceRouteTest extends ServiceTest {
             team
           ) ~> routes ~> check {
             status shouldBe Created
-            assertTeam(responseAs[Team], Team(id = "t3", name = team.name, startAmount = 12))
+            assertTeam(responseAs[Team], Team(id = "t3", name = team.name, startAmount = 12, authToken = responseAs[Team].authToken))
             TeamService.teamAgent.get.length shouldEqual 1
           }
         }
@@ -102,19 +102,19 @@ class TeamServiceRouteTest extends ServiceTest {
             team
           ) ~> routes ~> check {
             status shouldBe Created
-            assertTeam(responseAs[Team], Team(id = "t3", name = team.name, startAmount = 11))
+            assertTeam(responseAs[Team], Team(id = "t3", name = team.name, startAmount = 11, authToken = responseAs[Team].authToken))
             TeamService.teamAgent.get.length shouldEqual 1
           }
         }
       }
-      "updates team" in withTeam("fcd") { teams =>
-        val team = CreateTeam(name = "T3", startAmount = Some(12))
+      "updates team" in withTeam("MyTeam") { teams =>
+        val team = CreateTeam(name = "The Other Team", startAmount = Some(12))
         Put(
           s"/$apiVersion/teams/${teams.head.id}",
           team
         ) ~> routes ~> check {
           status shouldBe OK
-          assertTeam(responseAs[Team], Team(id = "t3", name = team.name, startAmount = 12))
+          assertTeam(responseAs[Team], Team(id = teams.head.id, name = team.name, startAmount = team.startAmount.get, authToken = "*****"))
           TeamService.teamAgent.get.length shouldEqual 1
         }
       }
@@ -123,7 +123,7 @@ class TeamServiceRouteTest extends ServiceTest {
 
   private def assertTeam(response: Team, against: Team): Assertion = {
     assert(
-      response.id.length > 0 && response.name == against.name && response.startAmount == against.startAmount
+      response.id.length > 0 && response.name == against.name && response.startAmount == against.startAmount && response.authToken == against.authToken
     )
   }
 }

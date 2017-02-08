@@ -36,7 +36,7 @@ trait TeamServiceRoute
       path(Segment) { id: String =>
         get {
           getTeamById(id) match {
-            case Some(team) => complete(team)
+            case Some(team) => complete(team.copy(authToken = "*****"))
             case None       => complete(StatusCodes.NotFound)
           }
         } ~ put {
@@ -44,18 +44,20 @@ trait TeamServiceRoute
             getTeamById(id) match {
               case Some(team) =>
                 updateTeam(
-                  Team(id,
-                       pTeam.name,
-                       pTeam.startAmount.getOrElse(meritStartAmount))) match {
-                  case Success(t) => complete(StatusCodes.OK, t)
+                  Team(id = team.id,
+                       name = pTeam.name,
+                       startAmount = pTeam.startAmount.get,
+                    authToken = team.authToken)) match {
+                  case Success(t) => complete(StatusCodes.OK, t.copy(authToken = "*****"))
                   case Failure(ex) =>
                     complete(StatusCodes.Conflict, ex.getMessage)
                 }
               case _ =>
                 createTeam(
-                  Team(id,
-                       pTeam.name,
-                       pTeam.startAmount.getOrElse(meritStartAmount))) match {
+                  Team(id = id,
+                       name = pTeam.name,
+                       startAmount = pTeam.startAmount.getOrElse(
+                         meritStartAmount))) match {
                   case Success(team) => complete(StatusCodes.Created, team)
                   case Failure(ex) =>
                     complete(StatusCodes.Conflict, ex.getMessage)

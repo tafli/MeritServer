@@ -29,32 +29,34 @@ class UserServiceRouteTest extends ServiceTest {
 
     "calling POST /v1/users" should {
       "return newly created user" when {
-        "created without ID" in withTeam("T3") { teams =>
+        "created without ID" in withTeam("fcd") { teams =>
           Post(
             s"/$apiVersion/users",
             HttpEntity(
               ContentTypes.`application/json`,
-              """{"familyName":"FamilyName","firstName":"FirstName", "teamId":"T3"}""")) ~> routes ~> check {
+              """{"familyName":"FamilyName","firstName":"FirstName", "teamId":"fcd"}""")) ~> routes ~> check {
             status shouldBe Created
             assertUser(responseAs[User],
-                       User(teamId = "T3",
+                       User(teamId = "fcd",
                             familyName = "FamilyName",
-                            firstName = "FirstName"))
+                            firstName = "FirstName",
+                            authToken = responseAs[User].authToken))
           }
         }
-        "created with ID" in withTeam("T3") { teams =>
+        "created with ID" in withTeam("fcd") { teams =>
           Post(
             s"/$apiVersion/users",
             HttpEntity(
               ContentTypes.`application/json`,
-              """{"id":"userId","teamId":"T3","familyName":"FamilyName","firstName":"FirstName"}""")
+              """{"id":"userId","teamId":"fcd","familyName":"FamilyName","firstName":"FirstName"}""")
           ) ~> routes ~> check {
             status shouldBe Created
             assertUser(responseAs[User],
                        User(id = "userId",
-                            teamId = "T3",
+                            teamId = "fcd",
                             familyName = "FamilyName",
-                            firstName = "FirstName"))
+                            firstName = "FirstName",
+                            authToken = responseAs[User].authToken))
           }
         }
       }
@@ -74,13 +76,13 @@ class UserServiceRouteTest extends ServiceTest {
             exception.message.get
               .contains("Object is missing required member 'teamId'"))
         }
-        "user has no existing Team assigned" in withTeam("T3") { teams =>
+        "user has no existing Team assigned" in withTeam("fcd") { teams =>
           val exception = intercept[TestFailedException] {
             Post(
               s"/$apiVersion/users",
               HttpEntity(
                 ContentTypes.`application/json`,
-                """{"id":"userId", "teamId": "T1", "familyName":"FamilyName","firstName":"FirstName"}""")
+                """{"id":"userId", "teamId": "fce", "familyName":"FamilyName","firstName":"FirstName"}""")
             ) ~> routes ~> check {
               status shouldBe BadRequest
             }
@@ -89,12 +91,12 @@ class UserServiceRouteTest extends ServiceTest {
           assert(
             exception.message.get.contains("Provided Team does not exist"))
         }
-        "create User with no familyName" in withTeam("T3") { teams =>
+        "create User with no familyName" in withTeam("fcd") { teams =>
           val exception = intercept[TestFailedException] {
             Post(s"/$apiVersion/users",
                  HttpEntity(
                    MediaTypes.`application/json`,
-                   """{"teamId":"T3", "firstName":"Andreas"}""")) ~> routes ~> check {
+                   """{"teamId":"fcd", "firstName":"Andreas"}""")) ~> routes ~> check {
               status shouldBe Created
             }
           }
@@ -103,13 +105,13 @@ class UserServiceRouteTest extends ServiceTest {
             exception.message.get
               .contains("Object is missing required member 'familyName')"))
         }
-        "create User with no firstName" in withTeam("T3") { teams =>
+        "create User with no firstName" in withTeam("fcd") { teams =>
           val exception = intercept[TestFailedException] {
             Post(
               s"/$apiVersion/users",
               HttpEntity(
                 MediaTypes.`application/json`,
-                """{"teamId":"T3","familyName":"Boss"}""")) ~> routes ~> check {
+                """{"teamId":"fcd","familyName":"Boss"}""")) ~> routes ~> check {
               status shouldBe OK
             }
           }
@@ -123,12 +125,12 @@ class UserServiceRouteTest extends ServiceTest {
 
     "calling PUT /v1/users" should {
       "return list of newly created user" when {
-        "no user is already stored" in withTeam("T3") { teams =>
+        "no user is already stored" in withTeam("fcd") { teams =>
           Put(
             s"/$apiVersion/users",
             HttpEntity(
               ContentTypes.`application/json`,
-              """[{"teamId":"T3","familyName":"NewFamilyName1","firstName":"NewFirstName1"},{"teamId":"T3","familyName":"NewFamilyName2","firstName":"NewFirstName2"}]"""
+              """[{"teamId":"fcd","familyName":"NewFamilyName1","firstName":"NewFirstName1"},{"teamId":"fcd","familyName":"NewFamilyName2","firstName":"NewFirstName2"}]"""
             )
           ) ~> routes ~> check {
             status shouldBe Created
@@ -137,16 +139,18 @@ class UserServiceRouteTest extends ServiceTest {
             userList.length shouldBe 2
 
             assertUser(userList.head,
-                       User(teamId = "T3",
+                       User(teamId = "fcd",
                             familyName = "NewFamilyName1",
-                            firstName = "NewFirstName1"))
+                            firstName = "NewFirstName1",
+                            authToken = userList.head.authToken))
             assertUser(userList.tail.head,
-                       User(teamId = "T3",
+                       User(teamId = "fcd",
                             familyName = "NewFamilyName2",
-                            firstName = "NewFirstName2"))
+                            firstName = "NewFirstName2",
+                            authToken = userList(1).authToken))
           }
         }
-        "there are already users" in withTeam("T3") { teams =>
+        "there are already users" in withTeam("fcd") { teams =>
           withUsers(3) { users =>
             Get(s"/$apiVersion/users") ~> routes ~> check {
               val response = responseAs[JsArray]
@@ -157,7 +161,7 @@ class UserServiceRouteTest extends ServiceTest {
               s"/$apiVersion/users",
               HttpEntity(
                 ContentTypes.`application/json`,
-                """[{"teamId":"T3","familyName":"NewFamilyName1","firstName":"NewFirstName1"},{"teamId":"T3","familyName":"NewFamilyName2","firstName":"NewFirstName2"}]"""
+                """[{"teamId":"fcd","familyName":"NewFamilyName1","firstName":"NewFirstName1"},{"teamId":"fcd","familyName":"NewFamilyName2","firstName":"NewFirstName2"}]"""
               )
             ) ~> routes ~> check {
               status shouldBe Created
@@ -166,13 +170,15 @@ class UserServiceRouteTest extends ServiceTest {
               userList.length shouldBe 2
 
               assertUser(userList.head,
-                         User(teamId = "T3",
+                         User(teamId = "fcd",
                               familyName = "NewFamilyName1",
-                              firstName = "NewFirstName1"))
+                              firstName = "NewFirstName1",
+                              authToken = userList.head.authToken))
               assertUser(userList.tail.head,
-                         User(teamId = "T3",
+                         User(teamId = "fcd",
                               familyName = "NewFamilyName2",
-                              firstName = "NewFirstName2"))
+                              firstName = "NewFirstName2",
+                              authToken = userList(1).authToken))
             }
           }
         }
@@ -180,12 +186,12 @@ class UserServiceRouteTest extends ServiceTest {
     }
     "calling PUT /v1/users/dduck" should {
       "return newly created user" when {
-        "no user is already stored" in withTeam("T3") { teams =>
+        "no user is already stored" in withTeam("fcd") { teams =>
           Put(
             s"/$apiVersion/users/dduck",
             HttpEntity(
               ContentTypes.`application/json`,
-              """{"teamId":"T3","familyName":"Duck","firstName":"Donald"}"""
+              """{"teamId":"fcd","familyName":"Duck","firstName":"Donald"}"""
             )
           ) ~> routes ~> check {
             status shouldBe Created
@@ -194,14 +200,15 @@ class UserServiceRouteTest extends ServiceTest {
 
             assertUser(user,
                        User(id = "dduck",
-                            teamId = "T3",
+                            teamId = "fcd",
                             familyName = "Duck",
-                            firstName = "Donald"))
+                            firstName = "Donald",
+                            authToken = responseAs[User].authToken))
           }
         }
       }
       "fail" when {
-        "user already exists" in withTeam("T3") { teams =>
+        "user already exists" in withTeam("fcd") { teams =>
           withUsers(1) { users =>
             Put(
               s"/$apiVersion/users/${users.head.id}",
@@ -261,7 +268,12 @@ class UserServiceRouteTest extends ServiceTest {
 
   private def assertUser(response: User, against: User): Assertion = {
     assert(
-      response.id.length > 0 && response.teamId.length > 0 && response.familyName == against.familyName && response.firstName == against.firstName && response.balance == 0
+      response.id.length > 0
+        && response.teamId.length > 0
+        && response.familyName == against.familyName
+        && response.firstName == against.firstName
+        && response.balance == 0
+        && response.authToken == against.authToken
     )
   }
 }

@@ -36,6 +36,7 @@ trait MeritService extends Configuration {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   def getMerits: List[Merit] = MeritService.getListOfMerits
+  def getMeritsForTeam(teamId: String): List[Merit] = MeritService.getListOfMerits.filter(_.teamId == teamId)
 
   def payout(): List[Merit] = {
     math.random match {

@@ -32,7 +32,7 @@ class ServiceTest
       user = User(id = i.toString,
                   familyName = s"FamilyName$i",
                   firstName = s"FirstName$i",
-                  teamId = "T3")
+                  teamId = "fcd")
     } yield user).toList
 
     test(Await.result(UserService.userAgent.alter(list), 1 second))
