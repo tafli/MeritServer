@@ -1,6 +1,7 @@
 package meritserver.http.routes
 
 import akka.http.scaladsl.model.StatusCodes._
+import meritserver.models.{Transaction, User}
 import meritserver.services.TransactionService.NoFilter
 import spray.json.JsArray
 
@@ -59,9 +60,14 @@ class MeritServiceRouteTest extends ServiceTest {
                 responseAs[JsArray] shouldEqual JsArray()
 
                 getUsers.count(_.balance == 0) shouldEqual 1
+              }
 
-                getTransactions(NoFilter).size shouldEqual 4
-                getTransactions(NoFilter).filterNot(_.booked).size shouldEqual 0
+              Get(s"/$apiVersion/users") ~> routes ~> check {
+                responseAs[JsArray].convertTo[List[User]].count(_.balance == 0) shouldEqual 1
+              }
+
+              Get(s"/$apiVersion/transactions") ~> routes ~> check {
+                responseAs[JsArray].convertTo[List[Transaction]].count(_.booked == false) shouldEqual 0
               }
             }
           }
