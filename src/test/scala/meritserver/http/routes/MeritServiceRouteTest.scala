@@ -8,15 +8,6 @@ import spray.json.JsArray
 class MeritServiceRouteTest extends ServiceTest {
 
   "The service for the merits path" when {
-    "calling GET /v1/merits" should {
-      "return an empty merits list" in withTeam() { teams =>
-        withUsers(0) { users =>
-          Get(s"/$apiVersion/merits") ~> routes ~> check {
-            responseAs[JsArray] shouldEqual JsArray()
-          }
-        }
-      }
-    }
     "calling GET /v1/merits/fcd" should {
       "return empty list for team with no users" in withTeam("fcd") { teams =>
         withUsers(0) { users =>
@@ -58,16 +49,20 @@ class MeritServiceRouteTest extends ServiceTest {
               Post(s"/$apiVersion/merits/fcd/payday?pt=0") ~> routes ~> check {
                 status shouldBe OK
                 responseAs[JsArray] shouldEqual JsArray()
-              }
 
-              Thread.sleep(500)
+                Thread.sleep(1000)
 
-              Get(s"/$apiVersion/users") ~> routes ~> check {
-                responseAs[JsArray].convertTo[List[User]].count(_.balance == 0) shouldEqual 1
-              }
+                Get(s"/$apiVersion/users") ~> routes ~> check {
+                  responseAs[JsArray]
+                    .convertTo[List[User]]
+                    .count(_.balance == 0) shouldEqual 1
+                }
 
-              Get(s"/$apiVersion/transactions") ~> routes ~> check {
-                responseAs[JsArray].convertTo[List[Transaction]].count(_.booked == false) shouldEqual 0
+                Get(s"/$apiVersion/transactions") ~> routes ~> check {
+                  responseAs[JsArray]
+                    .convertTo[List[Transaction]]
+                    .count(_.booked == false) shouldEqual 0
+                }
               }
             }
           }
@@ -90,7 +85,9 @@ class MeritServiceRouteTest extends ServiceTest {
                 getUsers.count(_.balance == 0) shouldEqual users.size
 
                 getTransactions(NoFilter).size shouldEqual 4
-                getTransactions(NoFilter).filterNot(_.booked).size shouldEqual 0
+                getTransactions(NoFilter)
+                  .filterNot(_.booked)
+                  .size shouldEqual 0
               }
             }
           }

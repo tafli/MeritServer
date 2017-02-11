@@ -14,11 +14,7 @@ trait MeritServiceRoute
     with Model2Json {
 
   val meritsRoute: Route = pathPrefix("merits") {
-    pathEndOrSingleSlash {
-      get {
-        complete(getMerits)
-      }
-    } ~ pathPrefix(Segment) { teamId: String =>
+    pathPrefix(Segment) { teamId: String =>
       pathEndOrSingleSlash {
         get {
           TeamService.getTeamById(teamId) match {
