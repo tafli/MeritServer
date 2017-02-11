@@ -15,21 +15,16 @@ object FileAccessService {
   }
 
   def writeToFile(file: String, content: String): Unit = {
-    val bufferedWriter = new BufferedWriter(
-      new OutputStreamWriter(new FileOutputStream(file)))
+    val bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)))
     bufferedWriter.write(content)
     bufferedWriter.close()
   }
 
-  def delete(path: String): Unit = delete(Paths.get(path))
+  def createDirectoryIfNotExist(file: String): Unit = {
+    val path = Paths.get(file)
 
-  private def delete(path: Path): Unit = {
-    if (Files.isDirectory(path)) {
-      val files = Files.list(path).iterator().asScala
-      files.foreach(delete)
-      Files.delete(path)
-    } else if (Files.isRegularFile(path)) {
-      Files.delete(path)
+    if (!Files.exists(path)) {
+      Files.createDirectories(path)
     }
   }
 

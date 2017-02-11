@@ -1,6 +1,7 @@
 package meritserver.utils
 
 import com.typesafe.config.ConfigFactory
+import meritserver.services.FileAccessService
 
 trait Configuration {
   private val config     = ConfigFactory.load()
@@ -10,11 +11,15 @@ trait Configuration {
   val httpPort: Int = httpConfig.getInt("port")
 
   val meritStartAmount: Int = config.getInt("merit.startAmount")
-  val meritUsersFile: String = config.getString("merit.usersFile")
-  val meritTeamsFile: String = config.getString("merit.teamsFile")
-  val meritTransactionsFile: String = config.getString("merit.transactionsFile")
+
+  val meritDataDir: String = config.getString("merit.dataDir")
+  val meritUsersFile: String = s"${config.getString("merit.dataDir")}/users.json"
+  val meritTeamsFile: String = s"${config.getString("merit.dataDir")}/teams.json"
+  val meritTransactionsFile: String = s"${config.getString("merit.dataDir")}/transactions.json"
 
   val payoutThreshold: Double = config.getDouble("merit.payoutThreshold")
 
   val masterKey: String = config.getString("merit.auth.masterKey")
+
+  FileAccessService.createDirectoryIfNotExist(meritDataDir)
 }

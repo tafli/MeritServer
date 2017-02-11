@@ -49,28 +49,17 @@ class MeritServiceRouteTest extends ServiceTest {
               Post(s"/$apiVersion/merits/fcd/payday?pt=0") ~> routes ~> check {
                 status shouldBe OK
                 responseAs[JsArray] shouldEqual JsArray()
+              }
+              Get(s"/$apiVersion/users") ~> routes ~> check {
+                responseAs[JsArray]
+                  .convertTo[List[User]]
+                  .count(_.balance == 0) shouldEqual 1
+              }
 
-                Thread.sleep(1000)
-
-                Get(s"/$apiVersion/users") ~> routes ~> check {
-                  responseAs[JsArray]
-                    .convertTo[List[User]]
-                    .count(_.balance == 0) shouldEqual 1
-                }
-
-                Get(s"/$apiVersion/transactions") ~> routes ~> check {
-
-                  println(
-                    s"""
-                      |!!!
-                      |${responseAs[JsArray].prettyPrint}
-                      |!!!
-                    """.stripMargin)
-
-                  responseAs[JsArray]
-                    .convertTo[List[Transaction]]
-                    .count(_.booked == false) shouldEqual 0
-                }
+              Get(s"/$apiVersion/transactions") ~> routes ~> check {
+                responseAs[JsArray]
+                  .convertTo[List[Transaction]]
+                  .count(_.booked == false) shouldEqual 0
               }
             }
           }
