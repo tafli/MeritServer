@@ -15,10 +15,7 @@ object TransactionService extends TransactionService with Configuration {
 
   val transactionAgent: Agent[List[Transaction]] = Agent(List[Transaction]())
 
-  def load(): Option[String] = FileAccessService.readFromFile(transactionsFile)
-
-  def save(data: String): Unit =
-    FileAccessService.writeToFile(transactionsFile, data)
+  def load(): Unit = transactionAgent.send(DataAccessService.loadTransactions())
 
   case class Filter(booked: Option[String],
                     from: Option[String],

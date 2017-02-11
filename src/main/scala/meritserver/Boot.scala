@@ -5,7 +5,7 @@ import akka.event.{Logging, LoggingAdapter}
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import meritserver.http.HttpService
-import meritserver.services.{DataAccessService, TeamService, TransactionService, UserService}
+import meritserver.services.{TeamService, TransactionService, UserService}
 import meritserver.utils.Configuration
 
 import scala.concurrent.ExecutionContext
@@ -13,16 +13,13 @@ import scala.concurrent.ExecutionContext
 object Boot extends App with Configuration with HttpService {
   private implicit val system = ActorSystem()
 
-  override protected implicit val executor: ExecutionContext =
-    system.dispatcher
+  override protected implicit val executor: ExecutionContext = system.dispatcher
   override protected val log: LoggingAdapter = Logging(system, getClass)
-  override protected implicit val materializer: ActorMaterializer =
-    ActorMaterializer()
+  override protected implicit val materializer: ActorMaterializer = ActorMaterializer()
 
-  UserService.userAgent.send(DataAccessService.loadUsers())
-  TeamService.teamAgent.send(DataAccessService.loadTeams())
-  TransactionService.transactionAgent.send(
-    DataAccessService.loadTransactions())
+  UserService.load()
+  TeamService.load()
+  TransactionService.load()
 
   Http().bindAndHandle(routes, httpInterface, httpPort)
 }

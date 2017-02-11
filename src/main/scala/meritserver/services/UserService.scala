@@ -14,9 +14,7 @@ object UserService extends UserService with Configuration {
 
   val userAgent = Agent(List[User]())
 
-  def load(): Option[String] = FileAccessService.readFromFile(usersFile)
-
-  def save(data: String): Unit = FileAccessService.writeToFile(usersFile, data)
+  def load(): Unit = userAgent.send(DataAccessService.loadUsers())
 }
 
 trait UserService {

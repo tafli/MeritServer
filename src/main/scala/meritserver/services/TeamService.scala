@@ -1,9 +1,7 @@
 package meritserver.services
 
-import java.util.UUID
-
 import akka.agent.Agent
-import meritserver.models.{CreateTeam, Team}
+import meritserver.models.Team
 import meritserver.utils.Configuration
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -15,9 +13,7 @@ object TeamService extends TeamService with Configuration {
 
   val teamAgent = Agent(List[Team]())
 
-  def load(): Option[String] = FileAccessService.readFromFile(teamsFile)
-
-  def save(data: String): Unit = FileAccessService.writeToFile(teamsFile, data)
+  def load(): Unit = teamAgent.send(DataAccessService.loadTeams())
 }
 
 trait TeamService extends Configuration {
@@ -52,9 +48,4 @@ trait TeamService extends Configuration {
           new IllegalArgumentException("Team with this ID does not exists!"))
     }
   }
-
-  private def mapTeam(pTeam: CreateTeam): Team =
-    Team(UUID.randomUUID().toString,
-         pTeam.name,
-         pTeam.startAmount.getOrElse(meritStartAmount))
 }
