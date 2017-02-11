@@ -58,8 +58,6 @@ class MeritServiceRouteTest extends ServiceTest {
               Post(s"/$apiVersion/merits/fcd/payday?pt=0") ~> routes ~> check {
                 status shouldBe OK
                 responseAs[JsArray] shouldEqual JsArray()
-
-                getUsers.count(_.balance == 0) shouldEqual 1
               }
 
               Get(s"/$apiVersion/users") ~> routes ~> check {
