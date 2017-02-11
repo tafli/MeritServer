@@ -59,6 +59,14 @@ class MeritServiceRouteTest extends ServiceTest {
                 }
 
                 Get(s"/$apiVersion/transactions") ~> routes ~> check {
+
+                  println(
+                    s"""
+                      |!!!
+                      |${responseAs[JsArray].prettyPrint}
+                      |!!!
+                    """.stripMargin)
+
                   responseAs[JsArray]
                     .convertTo[List[Transaction]]
                     .count(_.booked == false) shouldEqual 0
