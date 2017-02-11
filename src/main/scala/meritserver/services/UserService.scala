@@ -24,6 +24,9 @@ trait UserService {
   def getUserById(id: String): Option[User] =
     UserService.userAgent.get.find(_.id == id)
 
+  def getUserByToken(token: String): Option[User] =
+    UserService.userAgent.get.find(_.authToken == token)
+
   def deleteUsers(): Unit = {
     val usersFuture = UserService.userAgent.alter(List())
 

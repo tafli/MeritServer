@@ -7,8 +7,9 @@ object MeritService {
   def getListOfMerits(pTeam: Option[Team]): List[Merit] =
     pTeam match {
       case Some(team) =>
-        UserService.userAgent.get.map(
-          user =>
+        UserService.userAgent.get
+          .filter(_.teamId == team.id)
+          .map(user =>
             Merit(
               userId = user.id,
               teamId = user.teamId,

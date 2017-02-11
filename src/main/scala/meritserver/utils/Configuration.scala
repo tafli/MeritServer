@@ -19,7 +19,7 @@ trait Configuration {
 
   val payoutThreshold: Double = config.getDouble("merit.payoutThreshold")
 
-  val masterKey: String = config.getString("merit.auth.masterKey")
+  val masterAuthToken: String = config.getString("merit.auth.masterAuthToken")
 
   FileAccessService.createDirectoryIfNotExist(meritDataDir)
 }
