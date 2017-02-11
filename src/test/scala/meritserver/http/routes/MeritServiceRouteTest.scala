@@ -60,6 +60,8 @@ class MeritServiceRouteTest extends ServiceTest {
                 responseAs[JsArray] shouldEqual JsArray()
               }
 
+              Thread.sleep(500)
+
               Get(s"/$apiVersion/users") ~> routes ~> check {
                 responseAs[JsArray].convertTo[List[User]].count(_.balance == 0) shouldEqual 1
               }
