@@ -85,13 +85,13 @@ class TeamServiceRouteTest extends ServiceTest {
     "calling PUT /v1/teams/t3" should {
       "return newly create team" when {
         "sent with start amount" in withTeam() { teams =>
-          val team = CreateTeam(name = "T3", startAmount = Some(12))
+          val team = CreateTeam(name = "T3", startAmount = Some(42))
           Put(
             s"/$apiVersion/teams/t3",
             team
           ) ~> routes ~> check {
             status shouldBe Created
-            assertTeam(responseAs[Team], Team(id = "t3", name = team.name, startAmount = 12, authToken = responseAs[Team].authToken))
+            assertTeam(responseAs[Team], Team(id = "t3", name = team.name, startAmount = 42, authToken = responseAs[Team].authToken))
             TeamService.teamAgent.get.length shouldEqual 1
           }
         }
@@ -108,7 +108,7 @@ class TeamServiceRouteTest extends ServiceTest {
         }
       }
       "updates team" in withTeam("MyTeam") { teams =>
-        val team = CreateTeam(name = "The Other Team", startAmount = Some(12))
+        val team = CreateTeam(name = "The Other Team", startAmount = Some(42))
         Put(
           s"/$apiVersion/teams/${teams.head.id}",
           team

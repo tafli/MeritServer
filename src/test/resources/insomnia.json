@@ -1,8 +1,8 @@
 {
 	"_type": "export",
 	"__export_format": 3,
-	"__export_date": "2017-01-20T20:28:52.853Z",
-	"__export_source": "insomnia.desktop.app:v4.1.1",
+	"__export_date": "2017-02-08T18:58:04.022Z",
+	"__export_source": "insomnia.desktop.app:v4.2.11",
 	"resources": [
 		{
 			"_id": "wrk_41716311aa044a21882327e3f721b995",
@@ -26,7 +26,7 @@
 		{
 			"_id": "jar_2d249294b96342b6930be626df647b12",
 			"parentId": "wrk_41716311aa044a21882327e3f721b995",
-			"modified": 1484862518834,
+			"modified": 1485238831569,
 			"created": 1484032836625,
 			"name": "Default Jar",
 			"cookies": [],
@@ -43,13 +43,23 @@
 			"_type": "request_group"
 		},
 		{
+			"_id": "fld_922507503684441aa554e7a695681473",
+			"parentId": "wrk_41716311aa044a21882327e3f721b995",
+			"modified": 1485375730963,
+			"created": 1485375730963,
+			"name": "Teams",
+			"environment": {},
+			"metaSortKey": -1485375730963,
+			"_type": "request_group"
+		},
+		{
 			"_id": "fld_980f60ae080542409e12e2207e65bbdc",
 			"parentId": "wrk_41716311aa044a21882327e3f721b995",
-			"modified": 1484602667471,
+			"modified": 1485376201219,
 			"created": 1484602667471,
 			"name": "Merits",
 			"environment": {},
-			"metaSortKey": -1484602667471,
+			"metaSortKey": -1485375731013,
 			"_type": "request_group"
 		},
 		{
@@ -104,7 +114,7 @@
 		{
 			"_id": "req_4ff53ddd7f9742dd9e7cbdb63de77f39",
 			"parentId": "fld_8904f90f21414ca08491a454f36ecdb3",
-			"modified": 1484722578532,
+			"modified": 1486578126284,
 			"created": 1484167865920,
 			"url": "http://{{server}}/v1/transactions",
 			"name": "/v1/transactions",
@@ -112,7 +122,21 @@
 			"body": {
 				"text": ""
 			},
-			"parameters": [],
+			"parameters": [
+				{
+					"name": "to",
+					"value": "abos"
+				},
+				{
+					"name": "booked",
+					"value": "false",
+					"disabled": true
+				},
+				{
+					"name": "",
+					"value": ""
+				}
+			],
 			"headers": [],
 			"authentication": {},
 			"metaSortKey": -1484167865920,
@@ -138,14 +162,14 @@
 		{
 			"_id": "req_ebf4e70f6e4943da92dfbbc2a9dc9e84",
 			"parentId": "fld_8904f90f21414ca08491a454f36ecdb3",
-			"modified": 1484746881708,
+			"modified": 1485528039166,
 			"created": 1484201885605,
 			"url": "http://{{server}}/v1/transactions",
 			"name": "/v1/transactions",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"from\": \"abos\",\n\t\"to\": \"so\",\n\t\"amount\": 1,\n\t\"reason\": \"Vielen Dank für die Clementinen.\"\n}"
+				"text": "{\n\t\"from\": \"abos\",\n\t\"to\": \"elb\",\n\t\"amount\": 1,\n\t\"reason\": \"Vielen Dank für deine Unterstützung bei TMC-1543.\"\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -156,6 +180,69 @@
 			],
 			"authentication": {},
 			"metaSortKey": -1484167865919,
+			"_type": "request"
+		},
+		{
+			"_id": "req_3d713ba9ebc447dd8afe2d4f2942614e",
+			"parentId": "fld_922507503684441aa554e7a695681473",
+			"modified": 1485375748813,
+			"created": 1485375738331,
+			"url": "http://{{server}}/v1/teams",
+			"name": "/v1/teams",
+			"method": "GET",
+			"body": {
+				"text": ""
+			},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1485375738331,
+			"_type": "request"
+		},
+		{
+			"_id": "req_72ce8203bf0f4570954775b34a1aa9ac",
+			"parentId": "fld_922507503684441aa554e7a695681473",
+			"modified": 1485776252467,
+			"created": 1485775640326,
+			"url": "http://{{server}}/v1/teams/t6",
+			"name": "/v1/teams/t3",
+			"method": "PUT",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"name\":\"T3 - The best team ever!\",\n\t\"startAmount\" : 25\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1485375738329,
+			"_type": "request"
+		},
+		{
+			"_id": "req_c03566d5f8bf4c31b39c36ea83a31e9e",
+			"parentId": "fld_922507503684441aa554e7a695681473",
+			"modified": 1485776272766,
+			"created": 1485375753495,
+			"url": "http://{{server}}/v1/teams",
+			"name": "/v1/teams",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"name\":\"T3 - The best team ever!\",\n\t\"startAmount\": 42\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1485375738330,
 			"_type": "request"
 		},
 		{
@@ -212,14 +299,14 @@
 		{
 			"_id": "req_a59b78b430e8400a941b91fc4a67f0bb",
 			"parentId": "fld_bf641a642be5472dab5a78726b414002",
-			"modified": 1484776899064,
+			"modified": 1485379462345,
 			"created": 1484160765716,
 			"url": "http://{{server}}/v1/users",
 			"name": "/v1/users",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"id\": \"äöü\",\n\t\"firstName\": \"UTF-8 Test with üÜÄ\",\n\t\"familyName\": \"Duck\"\n}"
+				"text": "{\n\t\"id\": \"mg\",\n\t\"teamId\": \"T3\",\n\t\"firstName\": \"Martin\",\n\t\"familyName\": \"Gantenbein\"\n}"
 			},
 			"parameters": [],
 			"headers": [

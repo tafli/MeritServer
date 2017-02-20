@@ -26,6 +26,17 @@ Download sources an use `sbt run` to compile an run the project. By default the 
 - `merit.userFile`: File path where the user data is save.
 - `merit.transactionFile`: File path where the transaction data is saved.
 
+## Security
+There is a simple security built into MeritServer. Request are authorized using a query parameter `auth`
+with a generated key. The key itself is generated on creating a team or user and is shown only after creation.
+
+Each request has its level (Team, User) at the start of its description.
+
+The authorization levels are:
+- **MeritServer**: With this key, everything is allowed. This is THE master key and is stored on configuration level.
+- **Team**: This is the team key. With it, all team related actions like add user or payday is possible.
+- **User**: This key is used to give merits or to request current merit status of the team.
+
 ## API Reference
 
 ### Teams
@@ -303,6 +314,8 @@ curl --request DELETE \
 
 Returns for all users a list of all received merits since last payout.
 
+**Authentication-Level**: User, Team
+
 ```bash
 curl --request GET \
   --url http://localhost:9000/v1/merits/fcd
@@ -326,6 +339,8 @@ curl --request GET \
 #### POST `http://<server>:9000/v1/merits/{teamId}/payday`
 
 Based on a random number a payout is decided. The payout-list for all user is returned.
+
+**Authentication-Level**: Team
 
 ```bash
 curl --request POST \

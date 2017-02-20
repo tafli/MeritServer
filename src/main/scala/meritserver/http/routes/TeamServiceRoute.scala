@@ -20,7 +20,7 @@ trait TeamServiceRoute
   val teamRoute: Route = pathPrefix("teams") {
     pathEndOrSingleSlash {
       get {
-        complete(getTeams)
+        complete(getTeams.map(_.copy(authToken = "*****")))
       } ~
         post {
           entity(as[CreateTeam]) { pTeam =>

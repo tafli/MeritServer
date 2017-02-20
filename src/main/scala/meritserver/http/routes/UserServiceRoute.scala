@@ -20,7 +20,7 @@ trait UserServiceRoute
   val usersRoute: Route = pathPrefix("users") {
     pathEndOrSingleSlash {
       get {
-        complete(getUsers)
+        complete(getUsers.map(_.copy(authToken = "*****")))
       } ~
         post {
           entity(as[CreateUser]) { pUser =>
@@ -52,7 +52,7 @@ trait UserServiceRoute
       path(Segment) { id: String =>
         get {
           getUserById(id) match {
-            case Some(user) => complete(user)
+            case Some(user) => complete(user.copy(authToken = "*****"))
             case None => complete(StatusCodes.NotFound)
           }
         } ~ put {
