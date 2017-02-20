@@ -26,7 +26,6 @@ class UserServiceRouteTest extends ServiceTest {
         }
       }
     }
-
     "calling POST /v1/users" should {
       "return newly created user" when {
         "created without ID" in withTeam("fcd") { teams =>
@@ -122,7 +121,6 @@ class UserServiceRouteTest extends ServiceTest {
         }
       }
     }
-
     "calling PUT /v1/users" should {
       "return list of newly created user" when {
         "no user is already stored" in withTeam("fcd") { teams =>
@@ -253,7 +251,7 @@ class UserServiceRouteTest extends ServiceTest {
       "return user" in withUsers(1) { users =>
         Get(s"/$apiVersion/users/${users.head.id}") ~> routes ~> check {
           status shouldBe OK
-          assertUser(responseAs[User], users.head)
+          assertUser(responseAs[User], users.head.copy(authToken = "*****"))
         }
       }
       "fail with status 404" when {
