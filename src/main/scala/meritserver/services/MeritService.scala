@@ -68,7 +68,7 @@ trait MeritService extends Configuration {
                     balance = TransactionService.transactionAgent.get
                       .filter(_.to == user.id)
                       .filter(!_.booked)
-                      .foldLeft(0) { (acc, t) =>
+                      .foldLeft(user.balance) { (acc, t) =>
                         acc + t.amount
                       }
                 )))
