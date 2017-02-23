@@ -1,8 +1,8 @@
 {
 	"_type": "export",
 	"__export_format": 3,
-	"__export_date": "2017-02-08T18:58:04.022Z",
-	"__export_source": "insomnia.desktop.app:v4.2.11",
+	"__export_date": "2017-02-21T08:30:34.595Z",
+	"__export_source": "insomnia.desktop.app:v4.2.14",
 	"resources": [
 		{
 			"_id": "wrk_41716311aa044a21882327e3f721b995",
@@ -33,6 +33,16 @@
 			"_type": "cookie_jar"
 		},
 		{
+			"_id": "fld_bf641a642be5472dab5a78726b414002",
+			"parentId": "wrk_41716311aa044a21882327e3f721b995",
+			"modified": 1484167855264,
+			"created": 1484136453707,
+			"name": "Users",
+			"environment": {},
+			"metaSortKey": -1484167851699,
+			"_type": "request_group"
+		},
+		{
 			"_id": "fld_8904f90f21414ca08491a454f36ecdb3",
 			"parentId": "wrk_41716311aa044a21882327e3f721b995",
 			"modified": 1484167851649,
@@ -40,16 +50,6 @@
 			"name": "Transactions",
 			"environment": {},
 			"metaSortKey": -1484167851649,
-			"_type": "request_group"
-		},
-		{
-			"_id": "fld_922507503684441aa554e7a695681473",
-			"parentId": "wrk_41716311aa044a21882327e3f721b995",
-			"modified": 1485375730963,
-			"created": 1485375730963,
-			"name": "Teams",
-			"environment": {},
-			"metaSortKey": -1485375730963,
 			"_type": "request_group"
 		},
 		{
@@ -63,13 +63,13 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "fld_bf641a642be5472dab5a78726b414002",
+			"_id": "fld_922507503684441aa554e7a695681473",
 			"parentId": "wrk_41716311aa044a21882327e3f721b995",
-			"modified": 1484167855264,
-			"created": 1484136453707,
-			"name": "Users",
+			"modified": 1485375730963,
+			"created": 1485375730963,
+			"name": "Teams",
 			"environment": {},
-			"metaSortKey": -1484167851699,
+			"metaSortKey": -1485375730963,
 			"_type": "request_group"
 		},
 		{
@@ -84,23 +84,12 @@
 			"_type": "environment"
 		},
 		{
-			"_id": "env_3a15e84351f84c35b22db08b48989e21",
-			"parentId": "env_6c20dec8b20e4b91868d17b94e296b7b",
-			"modified": 1484722527227,
-			"created": 1484722488340,
-			"name": "10.151.24.188",
-			"data": {
-				"server": "10.151.24.188:55050"
-			},
-			"_type": "environment"
-		},
-		{
-			"_id": "req_3cd6f4c058a44595894c9913e7138a7b",
-			"parentId": "fld_8904f90f21414ca08491a454f36ecdb3",
-			"modified": 1484722586453,
-			"created": 1484256420801,
-			"url": "http://{{server}}/v1/transactions/3eb595f4-40a1-42bd-bceb-9a39164e0161",
-			"name": "/v1/transactions/{id}",
+			"_id": "req_d0547667802c42bc81c05ca360340396",
+			"parentId": "fld_bf641a642be5472dab5a78726b414002",
+			"modified": 1484722552776,
+			"created": 1484032826076,
+			"url": "http://{{server}}/v1/users",
+			"name": "/v1/users",
 			"method": "GET",
 			"body": {
 				"text": ""
@@ -108,175 +97,7 @@
 			"parameters": [],
 			"headers": [],
 			"authentication": {},
-			"metaSortKey": -1484167865919,
-			"_type": "request"
-		},
-		{
-			"_id": "req_4ff53ddd7f9742dd9e7cbdb63de77f39",
-			"parentId": "fld_8904f90f21414ca08491a454f36ecdb3",
-			"modified": 1486578126284,
-			"created": 1484167865920,
-			"url": "http://{{server}}/v1/transactions",
-			"name": "/v1/transactions",
-			"method": "GET",
-			"body": {
-				"text": ""
-			},
-			"parameters": [
-				{
-					"name": "to",
-					"value": "abos"
-				},
-				{
-					"name": "booked",
-					"value": "false",
-					"disabled": true
-				},
-				{
-					"name": "",
-					"value": ""
-				}
-			],
-			"headers": [],
-			"authentication": {},
-			"metaSortKey": -1484167865920,
-			"_type": "request"
-		},
-		{
-			"_id": "req_70b3c9b1fbae4ffca3566bdc14b40dc3",
-			"parentId": "fld_8904f90f21414ca08491a454f36ecdb3",
-			"modified": 1484723807255,
-			"created": 1484257098922,
-			"url": "http://{{server}}/v1/transactions/3cd97eec-27cc-4ba3-9e63-5073950d0b7d",
-			"name": "/v1/transactions/{id}",
-			"method": "DELETE",
-			"body": {
-				"text": ""
-			},
-			"parameters": [],
-			"headers": [],
-			"authentication": {},
-			"metaSortKey": -1484167865918,
-			"_type": "request"
-		},
-		{
-			"_id": "req_ebf4e70f6e4943da92dfbbc2a9dc9e84",
-			"parentId": "fld_8904f90f21414ca08491a454f36ecdb3",
-			"modified": 1485528039166,
-			"created": 1484201885605,
-			"url": "http://{{server}}/v1/transactions",
-			"name": "/v1/transactions",
-			"method": "POST",
-			"body": {
-				"mimeType": "application/json",
-				"text": "{\n\t\"from\": \"abos\",\n\t\"to\": \"elb\",\n\t\"amount\": 1,\n\t\"reason\": \"Vielen Dank für deine Unterstützung bei TMC-1543.\"\n}"
-			},
-			"parameters": [],
-			"headers": [
-				{
-					"name": "Content-Type",
-					"value": "application/json"
-				}
-			],
-			"authentication": {},
-			"metaSortKey": -1484167865919,
-			"_type": "request"
-		},
-		{
-			"_id": "req_3d713ba9ebc447dd8afe2d4f2942614e",
-			"parentId": "fld_922507503684441aa554e7a695681473",
-			"modified": 1485375748813,
-			"created": 1485375738331,
-			"url": "http://{{server}}/v1/teams",
-			"name": "/v1/teams",
-			"method": "GET",
-			"body": {
-				"text": ""
-			},
-			"parameters": [],
-			"headers": [],
-			"authentication": {},
-			"metaSortKey": -1485375738331,
-			"_type": "request"
-		},
-		{
-			"_id": "req_72ce8203bf0f4570954775b34a1aa9ac",
-			"parentId": "fld_922507503684441aa554e7a695681473",
-			"modified": 1485776252467,
-			"created": 1485775640326,
-			"url": "http://{{server}}/v1/teams/t6",
-			"name": "/v1/teams/t3",
-			"method": "PUT",
-			"body": {
-				"mimeType": "application/json",
-				"text": "{\n\t\"name\":\"T3 - The best team ever!\",\n\t\"startAmount\" : 25\n}"
-			},
-			"parameters": [],
-			"headers": [
-				{
-					"name": "Content-Type",
-					"value": "application/json"
-				}
-			],
-			"authentication": {},
-			"metaSortKey": -1485375738329,
-			"_type": "request"
-		},
-		{
-			"_id": "req_c03566d5f8bf4c31b39c36ea83a31e9e",
-			"parentId": "fld_922507503684441aa554e7a695681473",
-			"modified": 1485776272766,
-			"created": 1485375753495,
-			"url": "http://{{server}}/v1/teams",
-			"name": "/v1/teams",
-			"method": "POST",
-			"body": {
-				"mimeType": "application/json",
-				"text": "{\n\t\"name\":\"T3 - The best team ever!\",\n\t\"startAmount\": 42\n}"
-			},
-			"parameters": [],
-			"headers": [
-				{
-					"name": "Content-Type",
-					"value": "application/json"
-				}
-			],
-			"authentication": {},
-			"metaSortKey": -1485375738330,
-			"_type": "request"
-		},
-		{
-			"_id": "req_9d435f5c7b0c4f7aaed6e015f37d9ea4",
-			"parentId": "fld_980f60ae080542409e12e2207e65bbdc",
-			"modified": 1484725918432,
-			"created": 1484603001913,
-			"url": "http://{{server}}/v1/merits/payday",
-			"name": "/v1/merits/payday",
-			"method": "POST",
-			"body": {
-				"text": ""
-			},
-			"parameters": [],
-			"headers": [],
-			"authentication": {},
-			"metaSortKey": -1484602679142,
-			"_type": "request"
-		},
-		{
-			"_id": "req_ea212348230847d4af19f39787ad3cc2",
-			"parentId": "fld_980f60ae080542409e12e2207e65bbdc",
-			"modified": 1484722463066,
-			"created": 1484602679192,
-			"url": "http://{{server}}/v1/merits",
-			"name": "/v1/merits",
-			"method": "GET",
-			"body": {
-				"text": ""
-			},
-			"parameters": [],
-			"headers": [],
-			"authentication": {},
-			"metaSortKey": -1484602679192,
+			"metaSortKey": -1484032826076,
 			"_type": "request"
 		},
 		{
@@ -337,33 +158,16 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_d0547667802c42bc81c05ca360340396",
-			"parentId": "fld_bf641a642be5472dab5a78726b414002",
-			"modified": 1484722552776,
-			"created": 1484032826076,
-			"url": "http://{{server}}/v1/users",
-			"name": "/v1/users",
-			"method": "GET",
-			"body": {
-				"text": ""
-			},
-			"parameters": [],
-			"headers": [],
-			"authentication": {},
-			"metaSortKey": -1484032826076,
-			"_type": "request"
-		},
-		{
 			"_id": "req_e8ac435eabf04bcf858c6e41221b7ede",
 			"parentId": "fld_bf641a642be5472dab5a78726b414002",
-			"modified": 1484722950244,
+			"modified": 1487573126522,
 			"created": 1484255176535,
 			"url": "http://{{server}}/v1/users",
 			"name": "/v1/users",
 			"method": "PUT",
 			"body": {
 				"mimeType": "application/json",
-				"text": "[\n\t{\n\t\t\"id\": \"elb\",\n\t\t\"firstName\": \"Elena\",\n\t\t\"familyName\": \"Bechtold\"\n\t},\n\t{\n\t\t\"id\": \"jrb\",\n\t\t\"firstName\": \"Jörg\",\n\t\t\"familyName\": \"Bächtiger\"\n\t},\n\t{\n\t\t\"id\": \"fep\",\n\t\t\"firstName\": \"Felix\",\n\t\t\"familyName\": \"Pflanzl\"\n\t},\n\t{\n\t\t\"id\": \"hk\",\n\t\t\"firstName\": \"Meinrad\",\n\t\t\"familyName\": \"Hermanek\"\n\t},\n\t{\n\t\t\"id\": \"mav\",\n\t\t\"firstName\": \"Martin\",\n\t\t\"familyName\": \"Valasek\"\n\t},\n\t{\n\t\t\"id\": \"so\",\n\t\t\"firstName\": \"Makar\",\n\t\t\"familyName\": \"Szokolov\"\n\t},\n\t{\n\t\t\"id\": \"scha\",\n\t\t\"firstName\": \"Annetta\",\n\t\t\"familyName\": \"Schaad\"\n\t},\n\t{\n\t\t\"id\": \"hpk\",\n\t\t\"firstName\": \"Hans-Peter\",\n\t\t\"familyName\": \"Keilhofer\"\n\t},\n\t{\n\t\t\"id\": \"maj\",\n\t\t\"firstName\": \"Martin\",\n\t\t\"familyName\": \"Jungbauer\"\n\t},\n\t{\n\t\t\"id\": \"mg\",\n\t\t\"firstName\": \"Martin\",\n\t\t\"familyName\": \"Gantenbein\"\n\t},\n\t{\n\t\t\"id\": \"fsi\",\n\t\t\"firstName\": \"Simon\",\n\t\t\"familyName\": \"Frankenberger\"\n\t},\n\t{\n\t\t\"id\": \"eid\",\n\t\t\"firstName\": \"Eirik\",\n\t\t\"familyName\": \"Danielsen\"\n\t},\n\t{\n\t\t\"id\": \"abos\",\n\t\t\"firstName\": \"Andreas\",\n\t\t\"familyName\": \"Boss\"\n\t}\n]"
+				"text": "[\n\t{\n\t\t\"id\": \"elb\",\n\t\t\"firstName\": \"Elena\",\n\t\t\"familyName\": \"Bechtold\",\n\t\t\"teamId\": \"t3\"\n\t},\n\t{\n\t\t\"id\": \"jrb\",\n\t\t\"firstName\": \"Jörg\",\n\t\t\"familyName\": \"Bächtiger\",\n\t\t\"teamId\": \"t3\"\n\t},\n\t{\n\t\t\"id\": \"fep\",\n\t\t\"firstName\": \"Felix\",\n\t\t\"familyName\": \"Pflanzl\",\n\t\t\"teamId\": \"t3\"\n\t},\n\t{\n\t\t\"id\": \"hk\",\n\t\t\"firstName\": \"Meinrad\",\n\t\t\"familyName\": \"Hermanek\",\n\t\t\"teamId\": \"t3\"\n\t},\n\t{\n\t\t\"id\": \"mav\",\n\t\t\"firstName\": \"Martin\",\n\t\t\"familyName\": \"Valasek\",\n\t\t\"teamId\": \"t3\"\n\t},\n\t{\n\t\t\"id\": \"so\",\n\t\t\"firstName\": \"Makar\",\n\t\t\"familyName\": \"Szokolov\",\n\t\t\"teamId\": \"t3\"\n\t},\n\t{\n\t\t\"id\": \"scha\",\n\t\t\"firstName\": \"Annetta\",\n\t\t\"familyName\": \"Schaad\",\n\t\t\"teamId\": \"t3\"\n\t},\n\t{\n\t\t\"id\": \"hpk\",\n\t\t\"firstName\": \"Hans-Peter\",\n\t\t\"familyName\": \"Keilhofer\",\n\t\t\"teamId\": \"t3\"\n\t},\n\t{\n\t\t\"id\": \"maj\",\n\t\t\"firstName\": \"Martin\",\n\t\t\"familyName\": \"Jungbauer\",\n\t\t\"teamId\": \"t3\"\n\t},\n\t{\n\t\t\"id\": \"mg\",\n\t\t\"firstName\": \"Martin\",\n\t\t\"familyName\": \"Gantenbein\",\n\t\t\"teamId\": \"t3\"\n\t},\n\t{\n\t\t\"id\": \"fsi\",\n\t\t\"firstName\": \"Simon\",\n\t\t\"familyName\": \"Frankenberger\",\n\t\t\"teamId\": \"t3\"\n\t},\n\t{\n\t\t\"id\": \"eid\",\n\t\t\"firstName\": \"Eirik\",\n\t\t\"familyName\": \"Danielsen\",\n\t\t\"teamId\": \"t3\"\n\t},\n\t{\n\t\t\"id\": \"abos\",\n\t\t\"firstName\": \"Andreas\",\n\t\t\"familyName\": \"Boss\",\n\t\t\"teamId\": \"t3\"\n\t}\n]"
 			},
 			"parameters": [],
 			"headers": [
@@ -374,6 +178,202 @@
 			],
 			"authentication": {},
 			"metaSortKey": -1484032826074,
+			"_type": "request"
+		},
+		{
+			"_id": "req_4ff53ddd7f9742dd9e7cbdb63de77f39",
+			"parentId": "fld_8904f90f21414ca08491a454f36ecdb3",
+			"modified": 1487576548715,
+			"created": 1484167865920,
+			"url": "http://{{server}}/v1/transactions",
+			"name": "/v1/transactions",
+			"method": "GET",
+			"body": {
+				"text": ""
+			},
+			"parameters": [
+				{
+					"name": "to",
+					"value": "jrb",
+					"disabled": true
+				},
+				{
+					"name": "booked",
+					"value": "false",
+					"disabled": false
+				},
+				{
+					"name": "",
+					"value": ""
+				}
+			],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1484167865920,
+			"_type": "request"
+		},
+		{
+			"_id": "req_ebf4e70f6e4943da92dfbbc2a9dc9e84",
+			"parentId": "fld_8904f90f21414ca08491a454f36ecdb3",
+			"modified": 1487660365872,
+			"created": 1484201885605,
+			"url": "http://{{server}}/v1/transactions",
+			"name": "/v1/transactions",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"from\": \"abos\",\n\t\"to\": \"hk\",\n\t\"amount\": 1,\n\t\"reason\": \"Einfach so\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1484167865919,
+			"_type": "request"
+		},
+		{
+			"_id": "req_3cd6f4c058a44595894c9913e7138a7b",
+			"parentId": "fld_8904f90f21414ca08491a454f36ecdb3",
+			"modified": 1484722586453,
+			"created": 1484256420801,
+			"url": "http://{{server}}/v1/transactions/3eb595f4-40a1-42bd-bceb-9a39164e0161",
+			"name": "/v1/transactions/{id}",
+			"method": "GET",
+			"body": {
+				"text": ""
+			},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1484167865919,
+			"_type": "request"
+		},
+		{
+			"_id": "req_70b3c9b1fbae4ffca3566bdc14b40dc3",
+			"parentId": "fld_8904f90f21414ca08491a454f36ecdb3",
+			"modified": 1484723807255,
+			"created": 1484257098922,
+			"url": "http://{{server}}/v1/transactions/3cd97eec-27cc-4ba3-9e63-5073950d0b7d",
+			"name": "/v1/transactions/{id}",
+			"method": "DELETE",
+			"body": {
+				"text": ""
+			},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1484167865918,
+			"_type": "request"
+		},
+		{
+			"_id": "req_ea212348230847d4af19f39787ad3cc2",
+			"parentId": "fld_980f60ae080542409e12e2207e65bbdc",
+			"modified": 1487577521519,
+			"created": 1484602679192,
+			"url": "http://{{server}}/v1/merits/t3",
+			"name": "/v1/merits/t3",
+			"method": "GET",
+			"body": {
+				"text": ""
+			},
+			"parameters": [
+				{
+					"name": "auth",
+					"value": "{{ authKey }}"
+				}
+			],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1484602679192,
+			"_type": "request"
+		},
+		{
+			"_id": "req_9d435f5c7b0c4f7aaed6e015f37d9ea4",
+			"parentId": "fld_980f60ae080542409e12e2207e65bbdc",
+			"modified": 1487577545904,
+			"created": 1484603001913,
+			"url": "http://{{server}}/v1/merits/t3/payday",
+			"name": "/v1/merits/t3/payday",
+			"method": "POST",
+			"body": {
+				"text": ""
+			},
+			"parameters": [
+				{
+					"name": "auth",
+					"value": "{{ authKey }}"
+				}
+			],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1484602679142,
+			"_type": "request"
+		},
+		{
+			"_id": "req_3d713ba9ebc447dd8afe2d4f2942614e",
+			"parentId": "fld_922507503684441aa554e7a695681473",
+			"modified": 1485375748813,
+			"created": 1485375738331,
+			"url": "http://{{server}}/v1/teams",
+			"name": "/v1/teams",
+			"method": "GET",
+			"body": {
+				"text": ""
+			},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1485375738331,
+			"_type": "request"
+		},
+		{
+			"_id": "req_c03566d5f8bf4c31b39c36ea83a31e9e",
+			"parentId": "fld_922507503684441aa554e7a695681473",
+			"modified": 1485776272766,
+			"created": 1485375753495,
+			"url": "http://{{server}}/v1/teams",
+			"name": "/v1/teams",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"name\":\"T3 - The best team ever!\",\n\t\"startAmount\": 42\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1485375738330,
+			"_type": "request"
+		},
+		{
+			"_id": "req_72ce8203bf0f4570954775b34a1aa9ac",
+			"parentId": "fld_922507503684441aa554e7a695681473",
+			"modified": 1487572651409,
+			"created": 1485775640326,
+			"url": "http://{{server}}/v1/teams/t3",
+			"name": "/v1/teams/t3",
+			"method": "PUT",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"name\":\"T3 - The best team ever!\",\n\t\"startAmount\" : 11\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1485375738329,
 			"_type": "request"
 		}
 	]

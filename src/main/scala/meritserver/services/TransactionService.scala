@@ -105,6 +105,9 @@ trait TransactionService {
     if (to.isEmpty)
       return Failure(new IllegalArgumentException("Receiver not found!"))
 
+    if(from.get.teamId != to.get.teamId)
+      return Failure(new IllegalArgumentException("Sender and Receiver not in same team!"))
+
     val sentAmount = TransactionService.transactionAgent.get
       .filter(_.from == transaction.from)
       .filterNot(_.booked == true)

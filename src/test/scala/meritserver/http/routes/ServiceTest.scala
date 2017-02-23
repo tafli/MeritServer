@@ -25,8 +25,8 @@ class ServiceTest
   val apiVersion = "v1"
 
   import scala.concurrent.duration._
-  def withUsers(count: Int, team: String = "fcd", clear: Boolean = true)(test: List[User] => Any): Any = {
-    if(clear) Await.result(UserService.userAgent.alter(List()), 1 second)
+  def withUsers(count: Int, team: String = "fcd", clearUsersList: Boolean = true)(test: List[User] => Any): Any = {
+    if(clearUsersList) Await.result(UserService.userAgent.alter(List()), 1 second)
 
     val list = (for {
       i <- 1 to count

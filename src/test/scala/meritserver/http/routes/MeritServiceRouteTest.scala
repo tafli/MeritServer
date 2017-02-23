@@ -1,7 +1,7 @@
 package meritserver.http.routes
 
 import akka.http.scaladsl.model.StatusCodes._
-import meritserver.models.{Transaction, User}
+import meritserver.models.{CreateTransaction, Transaction, User}
 import meritserver.services.TransactionService.NoFilter
 import org.scalatest.exceptions.TestFailedException
 import spray.json.JsArray
@@ -57,7 +57,7 @@ class MeritServiceRouteTest extends ServiceTest {
         }
         "using user token from wrong team" in withTeam("fcd") { teams =>
           withUsers(3) { usersFcd =>
-            withUsers(3, "fce", clear = false) { usersFce =>
+            withUsers(3, "fce", clearUsersList = false) { usersFce =>
               val exception = intercept[TestFailedException] {
                 Get(s"/$apiVersion/merits/fcd?auth=${usersFce.head.authToken}") ~> routes ~> check {
                   status shouldBe Unauthorized
@@ -123,6 +123,58 @@ class MeritServiceRouteTest extends ServiceTest {
                 responseAs[JsArray]
                   .convertTo[List[User]]
                   .count(_.balance == 0) shouldEqual 1
+              }
+
+              Get(s"/$apiVersion/transactions") ~> routes ~> check {
+                responseAs[JsArray]
+                  .convertTo[List[Transaction]]
+                  .count(_.booked == false) shouldEqual 0
+              }
+            }
+          }
+        }
+        "not paying out with transaction and user balance" in withTeam("fcd") { teams =>
+          withUsers(2) { users =>
+            withTransactions(users) { transactions =>
+              //TODO: Testing correct calculation with user balance
+              // Create Transactions, do a payday with pt=0, add some transactions and do payday with pt=0
+              // user balance must be correct
+              Post(
+                s"/$apiVersion/merits/fcd/payday?auth=$masterAuthToken&pt=0") ~> routes ~> check {
+                status shouldBe OK
+                responseAs[JsArray] shouldEqual JsArray()
+              }
+
+              Get(s"/$apiVersion/users") ~> routes ~> check {
+                responseAs[JsArray]
+                  .convertTo[List[User]]
+                  .count(_.balance == 0) shouldEqual 1
+              }
+
+              Post(
+                s"/$apiVersion/transactions?auth=42",
+                CreateTransaction(from = users.head.id, to = users.tail.head.id, amount = 1, reason = "Ey, its just a test!")
+              ) ~> routes ~> check {
+                status shouldBe Created
+              }
+
+              Post(
+                s"/$apiVersion/transactions?auth=42",
+                CreateTransaction(from = users.tail.head.id, to = users.head.id, amount = 1, reason = "Ey, its just a another test!")
+              ) ~> routes ~> check {
+                status shouldBe Created
+              }
+
+              Post(
+                s"/$apiVersion/merits/fcd/payday?auth=$masterAuthToken&pt=0") ~> routes ~> check {
+                status shouldBe OK
+                responseAs[JsArray] shouldEqual JsArray()
+              }
+
+              Get(s"/$apiVersion/users") ~> routes ~> check {
+                responseAs[JsArray]
+                  .convertTo[List[User]]
+                  .count(_.balance == 0) shouldEqual 0
               }
 
               Get(s"/$apiVersion/transactions") ~> routes ~> check {
