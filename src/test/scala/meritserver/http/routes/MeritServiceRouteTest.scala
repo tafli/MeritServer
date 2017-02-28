@@ -136,9 +136,6 @@ class MeritServiceRouteTest extends ServiceTest {
         "not paying out with transaction and user balance" in withTeam("fcd") { teams =>
           withUsers(2) { users =>
             withTransactions(users) { transactions =>
-              //TODO: Testing correct calculation with user balance
-              // Create Transactions, do a payday with pt=0, add some transactions and do payday with pt=0
-              // user balance must be correct
               Post(
                 s"/$apiVersion/merits/fcd/payday?auth=$masterAuthToken&pt=0") ~> routes ~> check {
                 status shouldBe OK
@@ -146,6 +143,7 @@ class MeritServiceRouteTest extends ServiceTest {
               }
 
               Get(s"/$apiVersion/users") ~> routes ~> check {
+                status shouldBe OK
                 responseAs[JsArray]
                   .convertTo[List[User]]
                   .count(_.balance == 0) shouldEqual 1
@@ -172,12 +170,14 @@ class MeritServiceRouteTest extends ServiceTest {
               }
 
               Get(s"/$apiVersion/users") ~> routes ~> check {
+                status shouldBe OK
                 responseAs[JsArray]
                   .convertTo[List[User]]
                   .count(_.balance == 0) shouldEqual 0
               }
 
               Get(s"/$apiVersion/transactions") ~> routes ~> check {
+                status shouldBe OK
                 responseAs[JsArray]
                   .convertTo[List[Transaction]]
                   .count(_.booked == false) shouldEqual 0
