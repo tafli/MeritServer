@@ -22,8 +22,7 @@ Download sources an use `sbt run` to compile an run the project. By default the 
 ### Docker
 There is also I docker image on Docker Hub: [MeritServer](https://hub.docker.com/r/tafli/meritserver/)
 
-[![](https://images.microbadger.com/badges/version/tafli/meritserver.svg)](https://microbadger.com/images/tafli/meritserver)
-[![](https://images.microbadger.com/badges/image/tafli/meritserver.svg)](https://microbadger.com/images/tafli/meritserver "Get your own image badge on microbadger.com")
+[![Docker latest version](https://images.microbadger.com/badges/version/tafli/meritserver.svg)](https://microbadger.com/images/tafli/meritserver)
 
 ## Configuration
 
