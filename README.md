@@ -19,6 +19,10 @@ I decided to start my own to do this job. Beside that I could learn [Akka-HTTP](
 
 Download sources an use `sbt run` to compile an run the project. By default the webserver starts listening on port 9000.
 
+### Docker
+[![](https://images.microbadger.com/badges/version/tafli/meritserver.svg)](https://microbadger.com/images/tafli/meritserver)
+[![](https://images.microbadger.com/badges/image/tafli/meritserver.svg)](https://microbadger.com/images/tafli/meritserver "Get your own image badge on microbadger.com")
+
 ## Configuration
 
 - `merit.startAmount`: The amount of merits each user can give each round.
@@ -33,7 +37,7 @@ with a generated key. The key itself is generated on creating a team or user and
 Each request has its level (Team, User) at the start of its description.
 
 The authorization levels are:
-- **MeritServer**: With this key, everything is allowed. This is THE master key and is stored on configuration level.
+- **Admin**: With this key, everything is allowed. This is THE master key and is stored on configuration level.
 - **Team**: This is the team key. With it, all team related actions like add user or payday is possible.
 - **User**: This key is used to give merits or to request current merit status of the team.
 
@@ -278,30 +282,11 @@ curl --request POST \
 }
 ```
 
-#### GET `http://<server>:9000/v1/transactions/{id}`
-
-Returns a specific transaction identified by {id}.
-
-```bash
-curl --request GET \
-  --url http://localhost:9000/v1/transactions/3eb595f4-40a1-42bd-bceb-9a39164e0161
-```
-
-```json
-{
-	"booked": false,
-	"reason": "You are a beauty!",
-	"amount": 1,
-	"to": "51492b93-af20-4130-a37b-7b4c97fb9894",
-	"id": "3eb595f4-40a1-42bd-bceb-9a39164e0161",
-	"date": "2017-01-16",
-	"from": "8a7dedd2-a946-4dff-b8c7-fb392a7627ee"
-}
-```
-
 #### DELETE `http://<server>:9000/v1/transactions/{id}`
 
 Deletes a transaction specified by {id}.
+
+**Authentication-Level**: Admin
 
 ```bash
 curl --request DELETE \

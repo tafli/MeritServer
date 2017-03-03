@@ -40,16 +40,12 @@ trait TransactionServiceRoute
           }
       } ~
         path(Segment) { id: String =>
-          get {
-            getTransactionById(id) match {
-              case Some(pTransaction) => complete(pTransaction)
-              case _                  => complete(StatusCodes.InternalServerError)
-            }
-          } ~
+          authorizeAdmin(authToken) {
             delete {
-              deleteTransaction(id)
-              complete(StatusCodes.NoContent)
-            }
+                deleteTransaction(id)
+                complete(StatusCodes.NoContent)
+              }
+          }
         }
     }
   }
