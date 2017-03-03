@@ -20,6 +20,8 @@ I decided to start my own to do this job. Beside that I could learn [Akka-HTTP](
 Download sources an use `sbt run` to compile an run the project. By default the webserver starts listening on port 9000.
 
 ### Docker
+There is also I docker image on Docker Hub: [MeritServer](https://hub.docker.com/r/tafli/meritserver/)
+
 [![](https://images.microbadger.com/badges/version/tafli/meritserver.svg)](https://microbadger.com/images/tafli/meritserver)
 [![](https://images.microbadger.com/badges/image/tafli/meritserver.svg)](https://microbadger.com/images/tafli/meritserver "Get your own image badge on microbadger.com")
 
