@@ -1,7 +1,7 @@
 {
 	"_type": "export",
 	"__export_format": 3,
-	"__export_date": "2017-02-21T08:30:34.595Z",
+	"__export_date": "2017-03-30T05:43:38.657Z",
 	"__export_source": "insomnia.desktop.app:v4.2.14",
 	"resources": [
 		{
@@ -75,11 +75,12 @@
 		{
 			"_id": "env_1c6ed687af70417682e9064bf00ad17f",
 			"parentId": "env_6c20dec8b20e4b91868d17b94e296b7b",
-			"modified": 1484722484029,
+			"modified": 1487686726415,
 			"created": 1484722471028,
 			"name": "localhost",
 			"data": {
-				"server": "localhost:9000"
+				"server": "localhost:9000",
+				"authKey": 42
 			},
 			"_type": "environment"
 		},
@@ -183,7 +184,7 @@
 		{
 			"_id": "req_4ff53ddd7f9742dd9e7cbdb63de77f39",
 			"parentId": "fld_8904f90f21414ca08491a454f36ecdb3",
-			"modified": 1487576548715,
+			"modified": 1488549149062,
 			"created": 1484167865920,
 			"url": "http://{{server}}/v1/transactions",
 			"name": "/v1/transactions",
@@ -193,18 +194,14 @@
 			},
 			"parameters": [
 				{
-					"name": "to",
-					"value": "jrb",
+					"name": "from",
+					"value": "abos",
 					"disabled": true
 				},
 				{
 					"name": "booked",
 					"value": "false",
 					"disabled": false
-				},
-				{
-					"name": "",
-					"value": ""
 				}
 			],
 			"headers": [],
@@ -215,39 +212,27 @@
 		{
 			"_id": "req_ebf4e70f6e4943da92dfbbc2a9dc9e84",
 			"parentId": "fld_8904f90f21414ca08491a454f36ecdb3",
-			"modified": 1487660365872,
+			"modified": 1490344249369,
 			"created": 1484201885605,
 			"url": "http://{{server}}/v1/transactions",
 			"name": "/v1/transactions",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"from\": \"abos\",\n\t\"to\": \"hk\",\n\t\"amount\": 1,\n\t\"reason\": \"Einfach so\"\n}"
+				"text": "{\n\t\"from\": \"abos\",\n\t\"to\": \"hk\",\n\t\"amount\": 1,\n\t\"reason\": \"Für die Finnova-Meeting Präsentation\"\n}"
 			},
-			"parameters": [],
+			"parameters": [
+				{
+					"name": "auth",
+					"value": "{{ authKey }}"
+				}
+			],
 			"headers": [
 				{
 					"name": "Content-Type",
 					"value": "application/json"
 				}
 			],
-			"authentication": {},
-			"metaSortKey": -1484167865919,
-			"_type": "request"
-		},
-		{
-			"_id": "req_3cd6f4c058a44595894c9913e7138a7b",
-			"parentId": "fld_8904f90f21414ca08491a454f36ecdb3",
-			"modified": 1484722586453,
-			"created": 1484256420801,
-			"url": "http://{{server}}/v1/transactions/3eb595f4-40a1-42bd-bceb-9a39164e0161",
-			"name": "/v1/transactions/{id}",
-			"method": "GET",
-			"body": {
-				"text": ""
-			},
-			"parameters": [],
-			"headers": [],
 			"authentication": {},
 			"metaSortKey": -1484167865919,
 			"_type": "request"
@@ -294,7 +279,7 @@
 		{
 			"_id": "req_9d435f5c7b0c4f7aaed6e015f37d9ea4",
 			"parentId": "fld_980f60ae080542409e12e2207e65bbdc",
-			"modified": 1487577545904,
+			"modified": 1487688973941,
 			"created": 1484603001913,
 			"url": "http://{{server}}/v1/merits/t3/payday",
 			"name": "/v1/merits/t3/payday",
@@ -306,6 +291,11 @@
 				{
 					"name": "auth",
 					"value": "{{ authKey }}"
+				},
+				{
+					"name": "pt",
+					"value": "0",
+					"disabled": false
 				}
 			],
 			"headers": [],
@@ -356,14 +346,14 @@
 		{
 			"_id": "req_72ce8203bf0f4570954775b34a1aa9ac",
 			"parentId": "fld_922507503684441aa554e7a695681473",
-			"modified": 1487572651409,
+			"modified": 1490105191879,
 			"created": 1485775640326,
 			"url": "http://{{server}}/v1/teams/t3",
 			"name": "/v1/teams/t3",
 			"method": "PUT",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\":\"T3 - The best team ever!\",\n\t\"startAmount\" : 11\n}"
+				"text": "{\n\t\"name\":\"T3 - The best team ever!\",\n\t\"startAmount\" : 5\n}"
 			},
 			"parameters": [],
 			"headers": [

@@ -115,7 +115,7 @@ trait TransactionService {
         acc + t.amount
       }
 
-    if (sentAmount + transaction.amount > TransactionService.meritStartAmount)
+    if (sentAmount + transaction.amount > TeamService.getTeamById(from.get.teamId).get.startAmount)
       return Failure(new IllegalArgumentException(
         s"Available amount [${TransactionService.meritStartAmount - sentAmount}] too low!"))
 

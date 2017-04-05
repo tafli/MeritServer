@@ -12,12 +12,12 @@ class TeamServiceRouteTest extends ServiceTest {
 
   "The service for the teams path" when {
     "calling GET /v1/teams" should {
-      "return an empty team list" in withTeam() { teams =>
+      "return an empty team list" in withTeam() { _ =>
         Get(s"/$apiVersion/teams") ~> routes ~> check {
           responseAs[JsArray] shouldEqual JsArray()
         }
       }
-      "return all teams" in withTeam("T1", "T2", "T3", "T4") { teams =>
+      "return all teams" in withTeam("T1", "T2", "fcd", "T4") { teams =>
         Get(s"/$apiVersion/teams") ~> routes ~> check {
           val response = responseAs[JsArray]
           response.elements.size shouldEqual teams.length
@@ -26,10 +26,10 @@ class TeamServiceRouteTest extends ServiceTest {
     }
     "calling POST /v1/teams" should {
       "return newly created transaction" when {
-        "sent with start amount" in withTeam() { teams =>
-          val team = CreateTeam(name = "T3", startAmount = Some(12))
+        "sent with start amount" in withTeam() { _ =>
+          val team = CreateTeam(name = "fcd", startAmount = Some(12))
           Post(
-            s"/$apiVersion/teams",
+            s"/$apiVersion/teams?auth=42",
             team
           ) ~> routes ~> check {
             status shouldBe Created
@@ -37,10 +37,10 @@ class TeamServiceRouteTest extends ServiceTest {
             TeamService.teamAgent.get.length shouldEqual 1
           }
         }
-        "sent without start amount" in withTeam() { teams =>
-          val team = CreateTeam(name = "T3", startAmount = None)
+        "sent without start amount" in withTeam() { _ =>
+          val team = CreateTeam(name = "fcd", startAmount = None)
           Post(
-            s"/$apiVersion/teams",
+            s"/$apiVersion/teams?auth=42",
             team
           ) ~> routes ~> check {
             status shouldBe Created
@@ -50,13 +50,43 @@ class TeamServiceRouteTest extends ServiceTest {
         }
       }
       "fail" when {
-        "sent without team name defined" in withTeam() { teams =>
+        "no AuthToken is sent along" in withTeam() { _ =>
           val exception = intercept[TestFailedException] {
             Post(
               s"/$apiVersion/teams",
               HttpEntity(
                 ContentTypes.`application/json`,
-                """{"id":"T3"}""")
+                """{"id":"fcd"}""")
+            ) ~> routes ~> check {
+              status shouldBe Created
+            }
+          }
+
+          assert(exception.message.get.contains("AuthorizationFailedRejection"))
+          TeamService.teamAgent.get.length shouldEqual 0
+        }
+        "invalid AuthToken is sent along" in withTeam("fcg") { teams =>
+          val exception = intercept[TestFailedException] {
+            Post(
+              s"/$apiVersion/teams?auth=${teams.head.authToken}",
+              HttpEntity(
+                ContentTypes.`application/json`,
+                """{"id":"fcd"}""")
+            ) ~> routes ~> check {
+              status shouldBe Created
+            }
+          }
+
+          assert(exception.message.get.contains("AuthorizationFailedRejection"))
+          TeamService.teamAgent.get.length shouldEqual 1
+        }
+        "sent without team name defined" in withTeam() { _ =>
+          val exception = intercept[TestFailedException] {
+            Post(
+              s"/$apiVersion/teams?auth=42",
+              HttpEntity(
+                ContentTypes.`application/json`,
+                """{"id":"fcd"}""")
             ) ~> routes ~> check {
               status shouldBe Created
             }
@@ -65,13 +95,13 @@ class TeamServiceRouteTest extends ServiceTest {
           assert(exception.message.get.contains("Object is missing required member 'name'"))
           TeamService.teamAgent.get.length shouldEqual 0
         }
-        "sent with empty team name" in withTeam() { teams =>
+        "sent with empty team name" in withTeam() { _ =>
           val exception = intercept[TestFailedException] {
             Post(
-              s"/$apiVersion/teams",
+              s"/$apiVersion/teams?auth=42",
               HttpEntity(
                 ContentTypes.`application/json`,
-                """{"id":"T3", "name":""}""")
+                """{"id":"fcd", "name":""}""")
             ) ~> routes ~> check {
               status shouldBe Created
             }
@@ -82,27 +112,27 @@ class TeamServiceRouteTest extends ServiceTest {
         }
       }
     }
-    "calling PUT /v1/teams/t3" should {
+    "calling PUT /v1/teams/fcd" should {
       "return newly create team" when {
-        "sent with start amount" in withTeam() { teams =>
-          val team = CreateTeam(name = "T3", startAmount = Some(42))
+        "sent with start amount" in withTeam() { _ =>
+          val team = CreateTeam(name = "fcd", startAmount = Some(42))
           Put(
-            s"/$apiVersion/teams/t3",
+            s"/$apiVersion/teams/fcd?auth=42",
             team
           ) ~> routes ~> check {
             status shouldBe Created
-            assertTeam(responseAs[Team], Team(id = "t3", name = team.name, startAmount = 42, authToken = responseAs[Team].authToken))
+            assertTeam(responseAs[Team], Team(id = "fcd", name = team.name, startAmount = 42, authToken = responseAs[Team].authToken))
             TeamService.teamAgent.get.length shouldEqual 1
           }
         }
-        "sent without start amount" in withTeam() { teams =>
-          val team = CreateTeam(name = "T3", startAmount = None)
+        "sent without start amount" in withTeam() { _ =>
+          val team = CreateTeam(name = "fcd", startAmount = None)
           Put(
-            s"/$apiVersion/teams/t3",
+            s"/$apiVersion/teams/fcd?auth=42",
             team
           ) ~> routes ~> check {
             status shouldBe Created
-            assertTeam(responseAs[Team], Team(id = "t3", name = team.name, startAmount = 11, authToken = responseAs[Team].authToken))
+            assertTeam(responseAs[Team], Team(id = "fcd", name = team.name, startAmount = 11, authToken = responseAs[Team].authToken))
             TeamService.teamAgent.get.length shouldEqual 1
           }
         }
@@ -110,7 +140,7 @@ class TeamServiceRouteTest extends ServiceTest {
       "updates team" in withTeam("MyTeam") { teams =>
         val team = CreateTeam(name = "The Other Team", startAmount = Some(42))
         Put(
-          s"/$apiVersion/teams/${teams.head.id}",
+          s"/$apiVersion/teams/${teams.head.id}?auth=42",
           team
         ) ~> routes ~> check {
           status shouldBe OK

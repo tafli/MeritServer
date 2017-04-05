@@ -2,7 +2,7 @@ name := """MeritServer"""
 organization := "tafli"
 scalaVersion := "2.12.1"
 
-version := "0.5.0"
+version := "0.5.2"
 
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 
@@ -28,7 +28,7 @@ parallelExecution in Test := false
 enablePlugins(JavaAppPackaging)
 enablePlugins(DockerPlugin)
 
-dockerBaseImage := "frolvlad/alpine-oraclejdk8:slim"
+//dockerBaseImage := "frolvlad/alpine-oraclejdk8:slim"
 dockerUpdateLatest := true
 
 maintainer in Docker := "Andreas Boss <andi@theboss.ch>"
